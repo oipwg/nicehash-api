@@ -8,6 +8,8 @@ const apiKey = {
 	id: process.env.API_ID
 };
 
+const btcAddr = "16dZdWFr6bhy5bxwsyUyunuWED8zWfQiYA"
+
 describe('NiceHash', () => {
 	describe('Initial Setup', () => {
 		it('test authorization', async () => {
@@ -34,15 +36,19 @@ describe('NiceHash', () => {
 		});
 		it('get provider stats with btc addr', async () => {
 			let api = new NiceHash(apiKey);
-			let btc = "16dZdWFr6bhy5bxwsyUyunuWED8zWfQiYA"
-			let res = await api.getProviderStats(btc)
-			expect(res.addr).toEqual(btc)
+			let res = await api.getProviderStats(btcAddr)
+			expect(res.addr).toEqual(btcAddr)
 		});
 		it('get provider stats EX with btc addr', async () => {
 			let api = new NiceHash(apiKey);
-			let btc = "16dZdWFr6bhy5bxwsyUyunuWED8zWfQiYA"
-			let res = await api.getProviderStatsEx(btc)
-			expect(res.addr).toEqual(btc)
+			let res = await api.getProviderStatsEx(btcAddr)
+			expect(res.addr).toEqual(btcAddr)
+		});
+		it('get provider payments', async () => {
+			let api = new NiceHash(apiKey);
+			let res = await api.getProviderPayments(btcAddr)
+			console.log(res)
+			expect(res.addr).toEqual(btcAddr)
 		});
 
 	})
