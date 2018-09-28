@@ -148,5 +148,21 @@ describe('NiceHash', () => {
 			}
 			expect(pass).toBeTruthy()
 		});
+		it('set order limit', async () => {
+			let api = new NiceHash(apiKey);
+			let options = {
+				order: 123
+			}
+			let res = await api.setOrderLimit(options)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		});
+		it('get btc balance', async () => {
+			let api = new NiceHash(apiKey);
+			let res = await api.getBalance()
+		});
 	});
 });

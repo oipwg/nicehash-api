@@ -454,6 +454,62 @@ class NiceHash {
 			throw new Error(`Failed to decrease order price: ${err}`)
 		}
 	}
+
+	/**
+	 * Set new limit for the existing order.
+	 * @param options
+	 * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} options.algo="scrypt" - Algorithm name or ID
+	 * @param {string|number} options.amount - Pay amount in BTC;
+	 * @param {string|number} options.order - Order ID/number;
+	 * @param {string|number} options.limit=0 - Speed limit in GH/s or TH/s (0 for no limit);
+	 * @async
+	 * @returns {Promise<Object>}
+	 */
+	async setOrderLimit(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.set.limit",
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0,
+			limit: options.limit || 0,
+			order: options.order
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result
+			}
+		} catch (err) {
+			throw new Error(`Failed to set order limit: ${err}`)
+		}
+	}
+
+	/**
+	 * Get current confirmed Bitcoin balance.
+	 * @async
+	 * @returns {Promise<Object>}
+	 */
+	async getBalance() {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		let options = {
+			method: "balance",
+			...this.apikey
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.balance_confirmed
+			}
+		} catch (err) {
+			throw new Error(`Failed to get balance: ${err}`)
+		}
+	}
 	//-----------------------------UTIL------------------------------------
 	/**
 	 * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
