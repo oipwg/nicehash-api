@@ -59,6 +59,28 @@ class NiceHash {
 	}
 
 	/**
+	 * Get average profitability (price) and hashing speed for all algorithms in past 24 hours.
+	 */
+	async getCurrentGlobalStats24h(location) {
+		let params = {
+			method: "stats.global.current",
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			if (res.result && res.result.stats) {
+				for (let stat of res.result.stats) {
+					stat.algo = algorithms[stat.algo]
+				}
+				return res.result.stats
+			}
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+
+	/**
 	 * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
 	 * @param endpoint
 	 * @param {Object} [params]
