@@ -93,7 +93,7 @@ class NiceHash {
 	async getProviderStats(addr) {
 		let params = {
 			method: "stats.provider",
-			addr: addr
+			addr
 		};
 		let api = this.api("", params);
 		try {
@@ -114,7 +114,7 @@ class NiceHash {
 	async getProviderStatsEx(addr, from) {
 		let params = {
 			method: "stats.provider.ex",
-			addr: addr,
+			addr,
 			from
 		};
 		let api = this.api("", params);
@@ -136,13 +136,116 @@ class NiceHash {
 	async getProviderPayments(addr, from) {
 		let params = {
 			method: "stats.provider.payments",
-			addr: addr,
+			addr,
 			from
 		};
 		let api = this.api("", params);
 		try {
 			let res = (await api.get()).data;
 			return res.result
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+	/**
+	 * Get detailed stats for provider's workers (rigs).
+	 * @param {string} addr - Provider's BTC address;
+	 * @param {number|number} algo - Algorithm marked with ID or its name
+	 * @async
+	 * @return {Promise<Object>}
+	 */
+	async getWorkersStats(addr, algo) {
+		let params = {
+			method: "stats.provider.workers",
+			addr,
+			algo: checkAlgo(algo)
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			return res.result
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+	/**
+	 * Get all orders for certain algorithm. Refreshed every 30 seconds.
+	 * @param {number} location - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {number|string} algo - Algorithm marked with ID or its name.
+	 * @async
+	 * @return {Promise<Array.<Object>>}
+	 */
+	async getOrdersForAlgorithm(location, algo) {
+		let params = {
+			method: "orders.get",
+			location,
+			algo: checkAlgo(algo)
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.orders
+			}
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+	/**
+	 * Get information about Mult-Algorithm Mining
+	 * @returns {Promise<Array.<Object>>}
+	 */
+	async getMultiAlgoInfo() {
+		let params = {
+			method: "multialgo.info"
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.multialgo
+			}
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+	/**
+	 * Get information about Simple Multi-Algorithm Mining
+	 * @returns {Promise<Array.<Object>>}
+	 */
+	async getSingleMultiAlgoInfo() {
+		let params = {
+			method: "simplemultialgo.info"
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.simplemultialgo
+			}
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
+	/**
+	 * Get needed information for buying hashing power using NiceHashBot.
+	 * @returns {Promise<Array.<Object>>}
+	 */
+	async getBuyInfo() {
+		let params = {
+			method: "buy.info"
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.algorithms
+			}
 		} catch (err) {
 			throw new Error(`Failed to get current global state: ${err}`)
 		}
@@ -163,6 +266,24 @@ class NiceHash {
 			params
 		})
 	}
+}
+
+const checkAlgo = (algoName) => {
+	if (typeof algoName === 'string')
+		return convertAlgoToID(algoName)
+	return algoName
+}
+const convertAlgoToID = (algo) => {
+	if (typeof algo === 'string') {
+		for (let id in algorithms) {
+			if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
+				return id
+			}
+		}
+	} else if (typeof algo === 'number') {
+		if (algorithms[algo])
+			return algorithms.algo
+	} else return algo
 }
 
 export default NiceHash
