@@ -9,5 +9,12 @@ const apiKey = {
 };
 
 describe('NiceHash', () => {
-
+	describe('Initial Setup', () => {
+		it('test authorization', async () => {
+			let api = new NiceHash(apiKey)
+			expect(await api.testAuthorization()).toEqual({
+				result: { api_version: '1.2.7' }, method: null
+			});
+		})
+	})
 });

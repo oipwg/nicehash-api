@@ -18,6 +18,26 @@ class NiceHash {
 			this.key = settings.key;
 			this.id = settings.id
 		}
+	}
 
+	async testAuthorization(){
+		let api = this.api("")
+		try {
+			return (await api.get()).data
+		} catch(err) {
+			throw new Error(`Test Authorization request failed: ${err}`)
+		}
+	}
+
+	api(endpoint, params) {
+		return axios.create({
+			baseURL: `${this.base_url}${endpoint}`,
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+			},
+			params
+		})
 	}
 }
+
+export default NiceHash
