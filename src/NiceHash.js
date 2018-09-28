@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import algorithms from './algorithms'
 
 /**
@@ -18,9 +19,11 @@ class NiceHash {
 		if (settings && settings.key && settings.id) {
 			this.key = settings.key;
 			this.id = settings.id
+			this.apikey = {key: this.key, id: this.id}
 		}
 	}
 
+	//----------------------------PUBLIC----------------------------------
 	/**
 	 * Test Authorization
 	 * @async
@@ -144,7 +147,7 @@ class NiceHash {
 			let res = (await api.get()).data;
 			return res.result
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get payments for provider: ${err}`)
 		}
 	}
 
@@ -166,7 +169,7 @@ class NiceHash {
 			let res = (await api.get()).data;
 			return res.result
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get stats for provider's workers: ${err}`)
 		}
 	}
 
@@ -190,12 +193,13 @@ class NiceHash {
 				return res.result.orders
 			}
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get orders for algo: ${err}`)
 		}
 	}
 
 	/**
 	 * Get information about Mult-Algorithm Mining
+	 * @async
 	 * @returns {Promise<Array.<Object>>}
 	 */
 	async getMultiAlgoInfo() {
@@ -209,12 +213,13 @@ class NiceHash {
 				return res.result.multialgo
 			}
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get multi algo info: ${err}`)
 		}
 	}
 
 	/**
 	 * Get information about Simple Multi-Algorithm Mining
+	 * @async
 	 * @returns {Promise<Array.<Object>>}
 	 */
 	async getSingleMultiAlgoInfo() {
@@ -228,12 +233,13 @@ class NiceHash {
 				return res.result.simplemultialgo
 			}
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get single multi algo info: ${err}`)
 		}
 	}
 
 	/**
 	 * Get needed information for buying hashing power using NiceHashBot.
+	 * @async
 	 * @returns {Promise<Array.<Object>>}
 	 */
 	async getBuyInfo() {
@@ -247,10 +253,86 @@ class NiceHash {
 				return res.result.algorithms
 			}
 		} catch (err) {
-			throw new Error(`Failed to get current global state: ${err}`)
+			throw new Error(`Failed to get buy info: ${err}`)
 		}
 	}
 
+	//----------------------------PRIVATE----------------------------------
+	/**
+	 * Get all orders for certain algorithm owned by the customer. Refreshed every 30 seconds.
+	 * @param {Object} options
+	 * @param {number} [options.location=0] - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {number|string} [options.algo="scrypt"] - Algorithm ID or name
+	 * @async
+	 * @returns {Promise<Array.<Object>>}
+	 */
+	async getOrders(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.get",
+			my: '',
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result.orders
+			}
+		} catch (err) {
+			throw new Error(`Failed to get orders: ${err}`)
+		}
+	}
+
+	/**
+	 * Create new order. Only standard orders can be created with use of API.
+	 * @param options
+	 * @param {string|number} options.location - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} options.algo - Algorithm name or ID
+	 * @param {string|number} options.amount - Pay amount in BTC;
+	 * @param {string|number} options.price - Price in BTC/GH/day or BTC/TH/day;
+	 * @param {string|number} options.limit=0 - Speed limit in GH/s or TH/s (0 for no limit);
+	 * @param {string} options.pool_host - Pool hostname or IP;
+	 * @param {string} options.pool_port - Pool port
+	 * @param {string} options.pool_user - Pool username
+	 * @param {string} options.pool_pass - Pool password
+	 * @param {string|number} [options.code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
+	 * @async
+	 * @returns {Promise<boolean | Event>}
+	 */
+	async createOrder(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.create",
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0,
+			amount: options.amount || 0.01,
+			price: options.price || 2.9,
+			limit: options.limit || 0,
+			pool_host: options.pool_host,
+			pool_port: options.pool_port,
+			pool_user: options.pool_user,
+			pool_pass: options.pool_pass,
+			code: options.code || undefined
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get());
+			if (res.result) {
+				return res.result
+			}
+		} catch (err) {
+			throw new Error(`Failed to create orders: ${err}`)
+		}
+	}
+
+
+	//-----------------------------UTIL------------------------------------
 	/**
 	 * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
 	 * @param endpoint

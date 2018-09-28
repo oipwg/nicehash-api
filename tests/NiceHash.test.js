@@ -17,7 +17,7 @@ describe('NiceHash', () => {
 			expect(await api.testAuthorization()).toBeTruthy()
 		});
 	});
-	describe('Stats', () => {
+	describe('Public', () => {
 		it('get current global stats', async () => {
 			let api = new NiceHash(apiKey);
 			let location = 1;
@@ -74,5 +74,28 @@ describe('NiceHash', () => {
 			let res = await api.getBuyInfo()
 			expect(Array.isArray(res)).toBeTruthy()
 		});
-	})
+	});
+	describe('Private', () => {
+		it('get orders', async () => {
+			let api = new NiceHash(apiKey);
+			let res = await api.getOrders()
+			expect(Array.isArray(res)).toBeTruthy()
+		});
+		it('create order', async () => {
+			//ToDo: create a successful order
+			let api = new NiceHash(apiKey);
+			let options = {
+				pool_host: "snowflake.oip.fun",
+				pool_port: 3043,
+				pool_pass: "x",
+				pool_user: "LEX"
+			}
+			let res = await api.createOrder(options)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		})
+	});
 });
