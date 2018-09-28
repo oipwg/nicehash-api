@@ -104,7 +104,6 @@ describe('NiceHash', () => {
 				order: 123
 			}
 			let res = await api.refillOrder(options)
-			console.log(res)
 			let pass = false;
 			if (res.success || res.error) {
 				pass = true
@@ -118,7 +117,19 @@ describe('NiceHash', () => {
 				order: 123
 			}
 			let res = await api.removeOrder(options)
-			console.log(res)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		});
+		it('set order price', async () => {
+			let api = new NiceHash(apiKey);
+			let options = {
+				price: 0.01,
+				order: 123
+			}
+			let res = await api.setOrderPrice(options)
 			let pass = false;
 			if (res.success || res.error) {
 				pass = true

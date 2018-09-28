@@ -393,6 +393,37 @@ class NiceHash {
 		}
 	}
 
+	/**
+	 * Set new price for the existing order. Only increase is possible.
+	 * @param options
+	 * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} options.algo="scrypt" - Algorithm name or ID
+	 * @param {string|number} options.price - Price in BTC/GH/Day or BTC/TH/Day.
+	 * @param {string|number} options.order - Order ID/number
+	 * @async
+	 * @returns {Promise<Object>}
+	 */
+	async setOrderPrice(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.set.price",
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0,
+			order: options.order,
+			price: options.price,
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result
+			}
+		} catch (err) {
+			throw new Error(`Failed to set order price: ${err}`)
+		}
+	}
 	//-----------------------------UTIL------------------------------------
 	/**
 	 * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
