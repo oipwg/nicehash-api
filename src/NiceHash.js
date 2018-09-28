@@ -301,7 +301,7 @@ class NiceHash {
 	 * @param {string} options.pool_pass - Pool password
 	 * @param {string|number} [options.code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
 	 * @async
-	 * @returns {Promise<boolean | Event>}
+	 * @returns {Promise<Object>}
 	 */
 	async createOrder(options = {}) {
 		if (!this.id || !this.key)
@@ -322,12 +322,45 @@ class NiceHash {
 		}
 		let api = this.api("", options);
 		try {
-			let res = (await api.get());
+			let res = (await api.get()).data;
 			if (res.result) {
 				return res.result
 			}
 		} catch (err) {
 			throw new Error(`Failed to create orders: ${err}`)
+		}
+	}
+
+	/**
+	 * Create new order. Only standard orders can be created with use of API.
+	 * @param options
+	 * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} options.algo="scrypt" - Algorithm name or ID
+	 * @param {string|number} options.amount - Pay amount in BTC;
+	 * @param {string|number} options.order - Order ID
+	 * @async
+	 * @returns {Promise<Object>}
+	 */
+	async refillOrder(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.refill",
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0,
+			order: options.order,
+			amount: options.amount,
+		}
+		console.log(options)
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result
+			}
+		} catch (err) {
+			throw new Error(`Failed to refill orders: ${err}`)
 		}
 	}
 

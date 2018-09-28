@@ -96,6 +96,20 @@ describe('NiceHash', () => {
 				pass = true
 			}
 			expect(pass).toBeTruthy()
-		})
+		});
+		it('refill order', async () => {
+			let api = new NiceHash(apiKey);
+			let options = {
+				amount: 0.01,
+				order: 123
+			}
+			let res = await api.refillOrder(options)
+			console.log(res)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		});
 	});
 });
