@@ -26,6 +26,24 @@ describe('NiceHash', () => {
 			let api = new NiceHash(apiKey);
 			let res = await api.getCurrentGlobalStats24h()
 			expect(res.length).toEqual(34)
-		})
+		});
+		it('get provider stats without btc addr', async () => {
+			let api = new NiceHash(apiKey);
+			let res = await api.getProviderStats()
+			expect(res.error).toBeDefined()
+		});
+		it('get provider stats with btc addr', async () => {
+			let api = new NiceHash(apiKey);
+			let btc = "16dZdWFr6bhy5bxwsyUyunuWED8zWfQiYA"
+			let res = await api.getProviderStats(btc)
+			expect(res.addr).toEqual(btc)
+		});
+		it('get provider stats EX with btc addr', async () => {
+			let api = new NiceHash(apiKey);
+			let btc = "16dZdWFr6bhy5bxwsyUyunuWED8zWfQiYA"
+			let res = await api.getProviderStatsEx(btc)
+			expect(res.addr).toEqual(btc)
+		});
+
 	})
 });
