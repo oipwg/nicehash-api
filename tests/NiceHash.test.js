@@ -111,5 +111,19 @@ describe('NiceHash', () => {
 			}
 			expect(pass).toBeTruthy()
 		});
+		it('remove order', async () => {
+			let api = new NiceHash(apiKey);
+			let options = {
+				amount: 0.01,
+				order: 123
+			}
+			let res = await api.removeOrder(options)
+			console.log(res)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		});
 	});
 });

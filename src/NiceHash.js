@@ -352,7 +352,6 @@ class NiceHash {
 			order: options.order,
 			amount: options.amount,
 		}
-		console.log(options)
 		let api = this.api("", options);
 		try {
 			let res = (await api.get()).data;
@@ -364,6 +363,35 @@ class NiceHash {
 		}
 	}
 
+	/**
+	 * Remove existing order.
+	 * @param options
+	 * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} options.algo="scrypt" - Algorithm name or ID
+	 * @param {string|number} options.order - Order ID
+	 * @async
+	 * @returns {Promise<Object>}
+	 */
+	async removeOrder(options = {}) {
+		if (!this.id || !this.key)
+			throw new Error('Must provide api key and api id on initialize')
+		options = {
+			method: "orders.remove",
+			...this.apikey,
+			location: options.location || 0,
+			algo: checkAlgo(options.algo) || 0,
+			order: options.order,
+		}
+		let api = this.api("", options);
+		try {
+			let res = (await api.get()).data;
+			if (res.result) {
+				return res.result
+			}
+		} catch (err) {
+			throw new Error(`Failed to remove orders: ${err}`)
+		}
+	}
 
 	//-----------------------------UTIL------------------------------------
 	/**
