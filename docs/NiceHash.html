@@ -74,7 +74,7 @@
       NiceHash
     </h3>
 
-    <h3>Classes</h3><ul><li id="NiceHash-nav"><a href="NiceHash.html">NiceHash</a></li></ul>
+    <h3>Classes</h3><ul><li id="NiceHash-nav"><a href="NiceHash.html">NiceHash</a><ul class='methods'><li data-type="method" id="NiceHash-api-nav"><a href="NiceHash.html#api">api</a></li><li data-type="method" id="NiceHash-createOrder-nav"><a href="NiceHash.html#createOrder">createOrder</a></li><li data-type="method" id="NiceHash-decreaseOrderPrice-nav"><a href="NiceHash.html#decreaseOrderPrice">decreaseOrderPrice</a></li><li data-type="method" id="NiceHash-getBalance-nav"><a href="NiceHash.html#getBalance">getBalance</a></li><li data-type="method" id="NiceHash-getBuyInfo-nav"><a href="NiceHash.html#getBuyInfo">getBuyInfo</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats-nav"><a href="NiceHash.html#getCurrentGlobalStats">getCurrentGlobalStats</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats24h-nav"><a href="NiceHash.html#getCurrentGlobalStats24h">getCurrentGlobalStats24h</a></li><li data-type="method" id="NiceHash-getMultiAlgoInfo-nav"><a href="NiceHash.html#getMultiAlgoInfo">getMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getOrders-nav"><a href="NiceHash.html#getOrders">getOrders</a></li><li data-type="method" id="NiceHash-getOrdersForAlgorithm-nav"><a href="NiceHash.html#getOrdersForAlgorithm">getOrdersForAlgorithm</a></li><li data-type="method" id="NiceHash-getProviderPayments-nav"><a href="NiceHash.html#getProviderPayments">getProviderPayments</a></li><li data-type="method" id="NiceHash-getProviderStats-nav"><a href="NiceHash.html#getProviderStats">getProviderStats</a></li><li data-type="method" id="NiceHash-getProviderStatsEx-nav"><a href="NiceHash.html#getProviderStatsEx">getProviderStatsEx</a></li><li data-type="method" id="NiceHash-getSingleMultiAlgoInfo-nav"><a href="NiceHash.html#getSingleMultiAlgoInfo">getSingleMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getWorkersStats-nav"><a href="NiceHash.html#getWorkersStats">getWorkersStats</a></li><li data-type="method" id="NiceHash-refillOrder-nav"><a href="NiceHash.html#refillOrder">refillOrder</a></li><li data-type="method" id="NiceHash-removeOrder-nav"><a href="NiceHash.html#removeOrder">removeOrder</a></li><li data-type="method" id="NiceHash-setOrderLimit-nav"><a href="NiceHash.html#setOrderLimit">setOrderLimit</a></li><li data-type="method" id="NiceHash-setOrderPrice-nav"><a href="NiceHash.html#setOrderPrice">setOrderPrice</a></li><li data-type="method" id="NiceHash-testAuthorization-nav"><a href="NiceHash.html#testAuthorization">testAuthorization</a></li></ul></li></ul>
   </nav>
 
   <div id="main">
@@ -321,7 +321,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line6">line 6</a>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line8">line 8</a>
         </li>
       </ul>
     </dd>
@@ -364,6 +364,4749 @@
 
     
 
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#api">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="api">
+      <span class="type-signature"></span>api<span class="signature">(endpoint, params<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {AxiosInstance}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Build initial AxiosInstance with baseURL = &quot;https://api.nicehash.com/api&quot;</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>endpoint</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>params</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line520">line 520</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      AxiosInstance
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createOrder">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createOrder">
+      <span class="type-signature">(async) </span>createOrder<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Create new order. Only standard orders can be created with use of API.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>amount</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pay amount in BTC;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>price</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Price in BTC/GH/day or BTC/TH/day;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>limit</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Speed limit in GH/s or TH/s (0 for no limit);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>pool_host</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pool hostname or IP;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>pool_port</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pool port</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>pool_user</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pool username</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>pool_pass</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pool password</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>code</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line306">line 306</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#decreaseOrderPrice">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="decreaseOrderPrice">
+      <span class="type-signature">(async) </span>decreaseOrderPrice<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Decrease price for the existing order. Price decrease possible every 10 minutes</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>order</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Order ID/number</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line437">line 437</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBalance">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBalance">
+      <span class="type-signature">(async) </span>getBalance<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get current confirmed Bitcoin balance.</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line496">line 496</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBuyInfo">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBuyInfo">
+      <span class="type-signature">(async) </span>getBuyInfo<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get needed information for buying hashing power using NiceHashBot.</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line245">line 245</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getCurrentGlobalStats">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getCurrentGlobalStats">
+      <span class="type-signature">(async) </span>getCurrentGlobalStats<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get current profitability (price) and hashing speed for all algorithms. Refreshed every 30 seconds.
+${number} [location] - 0 for Europe, 1 for USA. Both if omitted.</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line48">line 48</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getCurrentGlobalStats24h">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getCurrentGlobalStats24h">
+      <span class="type-signature">(async) </span>getCurrentGlobalStats24h<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get average profitability (price) and hashing speed for all algorithms in past 24 hours.</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line72">line 72</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getMultiAlgoInfo">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getMultiAlgoInfo">
+      <span class="type-signature">(async) </span>getMultiAlgoInfo<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get information about Mult-Algorithm Mining</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line205">line 205</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getOrders">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getOrders">
+      <span class="type-signature">(async) </span>getOrders<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get all orders for certain algorithm owned by the customer. Refreshed every 30 seconds.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    |
+
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm ID or name</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line269">line 269</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getOrdersForAlgorithm">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getOrdersForAlgorithm">
+      <span class="type-signature">(async) </span>getOrdersForAlgorithm<span class="signature">(location, algo)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get all orders for certain algorithm. Refreshed every 30 seconds.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    |
+
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Algorithm marked with ID or its name.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line183">line 183</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getProviderPayments">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getProviderPayments">
+      <span class="type-signature">(async) </span>getProviderPayments<span class="signature">(addr, from<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get payments for provider.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>addr</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Provider's BTC address.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>from</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line139">line 139</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getProviderStats">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getProviderStats">
+      <span class="type-signature">(async) </span>getProviderStats<span class="signature">(addr)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get current stats for provider for all algorithms. Refreshed every 30 seconds. It also returns past 56 payments</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>addr</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Provider's BTC address.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line96">line 96</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getProviderStatsEx">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getProviderStatsEx">
+      <span class="type-signature">(async) </span>getProviderStatsEx<span class="signature">(addr, from<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get detailed stats for provider for all algorithms including history data and payments in past 7 days.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>addr</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Provider's BTC address.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>from</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line117">line 117</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getSingleMultiAlgoInfo">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getSingleMultiAlgoInfo">
+      <span class="type-signature">(async) </span>getSingleMultiAlgoInfo<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get information about Simple Multi-Algorithm Mining</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line225">line 225</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Array.&lt;Object>>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getWorkersStats">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getWorkersStats">
+      <span class="type-signature">(async) </span>getWorkersStats<span class="signature">(addr, algo)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Get detailed stats for provider's workers (rigs).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>addr</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Provider's BTC address;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Algorithm marked with ID or its name</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line161">line 161</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#refillOrder">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="refillOrder">
+      <span class="type-signature">(async) </span>refillOrder<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Create new order. Only standard orders can be created with use of API.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>amount</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pay amount in BTC;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>order</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Order ID</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line344">line 344</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#removeOrder">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="removeOrder">
+      <span class="type-signature">(async) </span>removeOrder<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Remove existing order.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>order</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Order ID</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line375">line 375</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setOrderLimit">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setOrderLimit">
+      <span class="type-signature">(async) </span>setOrderLimit<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set new limit for the existing order.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>amount</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pay amount in BTC;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>order</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Order ID/number;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>limit</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Speed limit in GH/s or TH/s (0 for no limit);</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line469">line 469</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#setOrderPrice">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="setOrderPrice">
+      <span class="type-signature">(async) </span>setOrderPrice<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Set new price for the existing order. Only increase is possible.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              0
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+              "scrypt"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>price</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Price in BTC/GH/Day or BTC/TH/Day.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>order</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Order ID/number</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line406">line 406</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Object>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
+        
+
+<br />
+<br />
+<hr />
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#testAuthorization">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="testAuthorization">
+      <span class="type-signature">(async) </span>testAuthorization<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Boolean>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Test Authorization</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="NiceHash.js.html">NiceHash.js</a>, <a href="NiceHash.js.html#line32">line 32</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+  <dl class="param-type">
+    <dt>Type: </dt>
+    <dd>
+      
+    <span class="param-type">
+      Promise.&lt;Boolean>
+    </span>
+
+    
+
+
+    </dd>
+  </dl>
+
+
+    
+
+      
     
 
     
