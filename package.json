@@ -2,7 +2,7 @@
   "name": "nicehash-api",
   "version": "1.0.0",
   "description": "javascript wrapper for nicehash api",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "compile": "npx babel src --out-dir lib",
     "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
