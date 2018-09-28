@@ -1,0 +1,27 @@
+{
+  "name": "nicehash-api",
+  "version": "1.0.0",
+  "description": "javascript wrapper for nicehash api",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx babel src --out-dir lib",
+    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
+    "prepare": "npm run generate-docs && npm run compile",
+    "test": "jest --runInBand"
+  },
+  "author": "Ohryan",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-jest": "^23.6.0",
+    "jest": "^23.6.0",
+    "jsdoc": "^3.5.5",
+    "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
+  }
+}
