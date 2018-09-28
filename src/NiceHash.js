@@ -23,7 +23,8 @@ class NiceHash {
 
 	/**
 	 * Test Authorization
-	 * @returns {Promise<Object>}
+	 * @async
+	 * @returns {Promise<Boolean>}
 	 */
 	async testAuthorization(){
 		let api = this.api("");
@@ -38,6 +39,8 @@ class NiceHash {
 	/**
 	 * Get current profitability (price) and hashing speed for all algorithms. Refreshed every 30 seconds.
 	 * ${number} [location] - 0 for Europe, 1 for USA. Both if omitted.
+	 * @async
+	 * @return {Promise<Array.<Object>>}
 	 */
 	async getCurrentGlobalStats(location) {
 		let params = {
@@ -60,6 +63,8 @@ class NiceHash {
 
 	/**
 	 * Get average profitability (price) and hashing speed for all algorithms in past 24 hours.
+	 * @async
+	 * @return {Promise<Array.<Object>>}
 	 */
 	async getCurrentGlobalStats24h() {
 		let params = {
@@ -82,6 +87,8 @@ class NiceHash {
 	/**
 	 * Get current stats for provider for all algorithms. Refreshed every 30 seconds. It also returns past 56 payments
 	 * @param {string} addr - Provider's BTC address.
+	 * @async
+	 * @return {Promise<Object>}
 	 */
 	async getProviderStats(addr) {
 		let params = {
@@ -101,6 +108,8 @@ class NiceHash {
 	 * Get detailed stats for provider for all algorithms including history data and payments in past 7 days.
 	 * @param {string} addr - Provider's BTC address.
 	 * @param {number} [from] - Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)
+	 * @async
+	 * @return {Promise<Object>}
 	 */
 	async getProviderStatsEx(addr, from) {
 		let params = {
@@ -116,7 +125,29 @@ class NiceHash {
 			throw new Error(`Failed to get current global state: ${err}`)
 		}
 	}
-	
+
+	/**
+	 * Get payments for provider.
+	 * @param {string} addr - Provider's BTC address.
+	 * @param {number} [from] - Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)
+	 * @async
+	 * @return {Promise<Object>}
+	 */
+	async getProviderPayments(addr, from) {
+		let params = {
+			method: "stats.provider.payments",
+			addr: addr,
+			from
+		};
+		let api = this.api("", params);
+		try {
+			let res = (await api.get()).data;
+			return res.result
+		} catch (err) {
+			throw new Error(`Failed to get current global state: ${err}`)
+		}
+	}
+
 	/**
 	 * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
 	 * @param endpoint
