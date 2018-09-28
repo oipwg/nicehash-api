@@ -136,5 +136,17 @@ describe('NiceHash', () => {
 			}
 			expect(pass).toBeTruthy()
 		});
+		it('decrease order price', async () => {
+			let api = new NiceHash(apiKey);
+			let options = {
+				order: 123
+			}
+			let res = await api.decreaseOrderPrice(options)
+			let pass = false;
+			if (res.success || res.error) {
+				pass = true
+			}
+			expect(pass).toBeTruthy()
+		});
 	});
 });
