@@ -17,7 +17,6 @@ class NiceHash {
 		this.key = api_key
 		this.id = api_id
 		this.apikey = {key: this.key, id: this.id}
-		console.log(api_key, api_id, this.key, this.id, this.apikey)
 	}
 
 	//----------------------------PUBLIC----------------------------------
@@ -264,7 +263,6 @@ class NiceHash {
 	 * @returns {Promise<Array.<Object>>}
 	 */
 	async getOrders(options = {}) {
-		console.log(this.key, this.id)
 		if (!this.id || !this.key)
 			throw new Error('Must provide api key and api id on initialize')
 		options = {
