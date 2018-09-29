@@ -17,6 +17,7 @@ class NiceHash {
 		this.key = api_key
 		this.id = api_id
 		this.apikey = {key: this.key, id: this.id}
+		console.log(api_key, api_id, this.key, this.id, this.apikey)
 	}
 
 	//----------------------------PUBLIC----------------------------------
