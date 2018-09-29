@@ -101,19 +101,16 @@ import algorithms from './algorithms'
 class NiceHash {
 	/**
 	 * instantiate a NiceHash class that you can use to make REST requests to the NiceHash API
-	 * @param {Object} settings - api settings
-	 * @param {string|number} settings.id - NiceHash api id
-	 * @param {string} settings.key - NiceHash api key
+	 * @param {string} api_key - NiceHash api key
+	 * @param {string|number} api_id - NiceHash api id
 	 */
 
-	constructor(settings) {
+	constructor(api_key, api_id) {
 		this.base_url = "https://api.nicehash.com/api";
 
-		if (settings &amp;&amp; settings.key &amp;&amp; settings.id) {
-			this.key = settings.key;
-			this.id = settings.id
-			this.apikey = {key: this.key, id: this.id}
-		}
+		this.key = api_key
+		this.id = api_id
+		this.apikey = {key: this.key, id: this.id}
 	}
 
 	//----------------------------PUBLIC----------------------------------

@@ -92,7 +92,33 @@
 
   <section class="readme">
     <article>
-      <p>#README</p>
+      <p><a href="https://badge.fury.io/js/nicehash-api"><img src="https://badge.fury.io/js/nicehash-api.svg" alt="npm version"></a>
+<a href="https://travis-ci.org/oipwg/nicehash-api"><img src="https://travis-ci.org/oipwg/nicehash-api.svg?branch=master" alt="Build Status"></a></p>
+<h1>NiceHash API</h1><p>nicehash-api is a JavaScript wrapper library over the NiceHash API, 
+using es6/7 async functionality. Create a NiceHash account first, generate an API key and id,
+and enable API functionality within the Nice Hash settings.
+Then simply download and import the library to 
+start using it. Initialize the NiceHash class with your api key and id, and 
+call any method defined in the documentation! </p>
+<h2>Installation</h2><p>To install <code>nicehash-api</code> for use in an application, install the latest version
+from NPM and save it to your <code>package.json</code>. For this example
+we're using <code>npm</code></p>
+<pre class="prettyprint source lang-bash"><code>$ npm install nicehash-api</code></pre><h2>Getting Started</h2><p>To get started using the library, first import the <code>NiceHash</code> class
+from the <code>nicehash-api</code> module.</p>
+<pre class="prettyprint source lang-javascript"><code>import NiceHash from 'nicehash-api'</code></pre><p>After you have imported the api, you can go ahead and spawn a new 
+<code>NiceHash</code> Object. You must pass it your NiceHash api key and id or else 
+the class will not be able to make the API calls.</p>
+<pre class="prettyprint source lang-javascript"><code>let NiceHash = new NiceHash(api_key, api_id)</code></pre><h2>Using your first method</h2><p>To make sure the class was initiliazed correctly, we can test authorization by 
+calling:</p>
+<pre class="prettyprint source lang-javascript"><code>await NiceHash.testAuthorization()</code></pre><p>This library wraps every function in a es7 async/await wrapper. If instead you
+wish to deal with promises in a different way, feel free to do:</p>
+<pre class="prettyprint source lang-javascript"><code>NiceHash.testAuthorization().then(success => success).catch(err => err)</code></pre><p>We recommend using <code>async/await</code> as it makes the code more terse. <code>await</code> will
+resolve the promise in a synchronous manner that allows one to expect deterministic
+behavior.</p>
+<p>If <code>NiceHash.testAuthorization()</code> returns true then you are good to go! 
+Check out the rest of the documentation to see what else you can do!</p>
+<p>##Documentation
+https://oipwg.github.io/nicehash-api/</p>
     </article>
   </section>
 
