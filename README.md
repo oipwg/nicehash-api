@@ -51,5 +51,5 @@ behavior.
 If `NiceHash.testAuthorization()` returns true then you are good to go! 
 Check out the rest of the documentation to see what else you can do!
 
-##Documentation
+## Documentation
 https://oipwg.github.io/nicehash-api/
