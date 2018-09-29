@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'qs';
 import algorithms from './algorithms'
 
 /**
@@ -264,6 +263,7 @@ class NiceHash {
 	 * @returns {Promise<Array.<Object>>}
 	 */
 	async getOrders(options = {}) {
+		console.log(this.key, this.id)
 		if (!this.id || !this.key)
 			throw new Error('Must provide api key and api id on initialize')
 		options = {
