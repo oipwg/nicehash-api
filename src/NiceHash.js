@@ -313,7 +313,7 @@ class NiceHash {
 			pool_host: options.pool_host,
 			pool_port: options.pool_port,
 			pool_user: options.pool_user,
-			pool_pass: options.pool_pass,
+			pool_pass: options.pool_pass || 'x',
 			code: options.code || undefined
 		}
 		let api = this.api("", options);
@@ -487,7 +487,7 @@ class NiceHash {
 	/**
 	 * Get current confirmed Bitcoin balance.
 	 * @async
-	 * @returns {Promise<Object>}
+	 * @returns {Promise<Number>}
 	 */
 	async getBalance() {
 		if (!this.id || !this.key)
