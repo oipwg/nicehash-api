@@ -88,9 +88,10 @@ describe('NiceHash', () => {
 				pool_host: "snowflake.oip.fun",
 				pool_port: 3043,
 				pool_pass: "x",
-				pool_user: "LEX"
+				pool_user: "FNKgT3PpzVpWghAUJm4er5GLKu85ad42KD"
 			}
 			let res = await api.createOrder(options)
+			console.log('res: ', res)
 			let pass = false;
 			if (res.success || res.error) {
 				pass = true
