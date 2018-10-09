@@ -286,15 +286,15 @@ class NiceHash {
 	/**
 	 * Create new order. Only standard orders can be created with use of API.
 	 * @param options
-	 * @param {string|number} options.location - 0 for Europe (NiceHash), 1 for USA (WestHash);
-	 * @param {string|number} options.algo - Algorithm name or ID
-	 * @param {string|number} options.amount - Pay amount in BTC;
-	 * @param {string|number} options.price - Price in BTC/GH/day or BTC/TH/day;
-	 * @param {string|number} options.limit=0 - Speed limit in GH/s or TH/s (0 for no limit);
 	 * @param {string} options.pool_host - Pool hostname or IP;
 	 * @param {string} options.pool_port - Pool port
 	 * @param {string} options.pool_user - Pool username
 	 * @param {string} options.pool_pass - Pool password
+	 * @param {string|number} [options.location=1] - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} [options.algo='scrypt'] - Algorithm name or ID
+	 * @param {string|number} [options.amount=00.5]  - Pay amount in BTC;
+	 * @param {string|number} [options.price=.500] - Price in BTC/GH/day or BTC/TH/day;
+	 * @param {string|number} [options.limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
 	 * @param {string|number} [options.code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
 	 * @async
 	 * @returns {Promise<Object>}
@@ -305,11 +305,11 @@ class NiceHash {
 		options = {
 			method: "orders.create",
 			...this.apikey,
-			location: options.location || 0,
+			location: options.location || 1,
 			algo: checkAlgo(options.algo) || 0,
-			amount: options.amount || 0.01,
-			price: options.price || 2.9,
-			limit: options.limit || 0,
+			amount: options.amount || 0.005,
+			price: options.price || .500,
+			limit: options.limit || 0.01,
 			pool_host: options.pool_host,
 			pool_port: options.pool_port,
 			pool_user: options.pool_user,
