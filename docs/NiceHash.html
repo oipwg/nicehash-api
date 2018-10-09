@@ -626,243 +626,6 @@
     
       <tr>
         
-          <td class="name"><code>location</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    |
-
-    <span class="param-type">
-      number
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>algo</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    |
-
-    <span class="param-type">
-      number
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Algorithm name or ID</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>amount</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    |
-
-    <span class="param-type">
-      number
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Pay amount in BTC;</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>price</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    |
-
-    <span class="param-type">
-      number
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Price in BTC/GH/day or BTC/TH/day;</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>limit</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    |
-
-    <span class="param-type">
-      number
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-              0
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Speed limit in GH/s or TH/s (0 for no limit);</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
           <td class="name"><code>pool_host</code></td>
         
 
@@ -1020,6 +783,261 @@
 
         <td class="description last">
           <p>Pool password</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>location</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              1
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>0 for Europe (NiceHash), 1 for USA (WestHash);</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>algo</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              'scrypt'
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Algorithm name or ID</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>amount</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              00.5
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Pay amount in BTC;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>price</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              .500
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Price in BTC/GH/day or BTC/TH/day;</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>limit</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    |
+
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              0.01
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Speed limit in GH/s or TH/s (0 for no limit);</p>
           
         </td>
       </tr>
@@ -1499,7 +1517,7 @@
       </svg>
     </a>
     <h4 class="name" id="getBalance">
-      <span class="type-signature">(async) </span>getBalance<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+      <span class="type-signature">(async) </span>getBalance<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Number>}</span>
     </h4>
   </span>
 
@@ -1588,7 +1606,7 @@
     <dd>
       
     <span class="param-type">
-      Promise.&lt;Object>
+      Promise.&lt;Number>
     </span>
 
     
