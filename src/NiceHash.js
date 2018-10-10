@@ -298,8 +298,8 @@ class NiceHash {
 	 * @param {string} options.pool_pass - Pool password
 	 * @param {string|number} [options.location=1] - 0 for Europe (NiceHash), 1 for USA (WestHash);
 	 * @param {string|number} [options.algo='scrypt'] - Algorithm name or ID
-	 * @param {string|number} [options.amount=00.5]  - Pay amount in BTC;
-	 * @param {string|number} [options.price=.500] - Price in BTC/GH/day or BTC/TH/day;
+	 * @param {string|number} [options.amount=0.005]  - Pay amount in BTC;
+	 * @param {string|number} [options.price=] - Price in BTC/GH/day or BTC/TH/day;
 	 * @param {string|number} [options.limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
 	 * @param {string|number} [options.code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
 	 * @async
@@ -314,7 +314,7 @@ class NiceHash {
 			location: options.location || 1,
 			algo: checkAlgo(options.algo) || 0,
 			amount: options.amount || 0.005,
-			price: options.price || .500,
+			price: options.price,
 			limit: options.limit || 0.01,
 			pool_host: options.pool_host,
 			pool_port: options.pool_port,

@@ -27,6 +27,7 @@ describe('NiceHash', () => {
 		it('get current global stats 24h', async () => {
 			let api = new NiceHash(apiKey.key, apiKey.id);
 			let res = await api.getCurrentGlobalStats24h()
+			console.log(res)
 			expect(res.length).toEqual(34)
 		});
 		it('get provider stats without btc addr', async () => {
@@ -81,17 +82,19 @@ describe('NiceHash', () => {
 			let res = await api.getOrders()
 			expect(Array.isArray(res)).toBeTruthy()
 		});
-		it('create order', async () => {
+		it.skip('create order', async () => {
 			//ToDo: create a successful order
 			let api = new NiceHash(apiKey.key, apiKey.id);
 			let options = {
 				pool_host: "thecoin.pw",
 				pool_port: 3977,
 				pool_pass: "x",
-				pool_user: "bitspill.1"
+				pool_user: "bitspill.1",
+				limit: 0.01,
+				price: .5
 			}
 			let res = await api.createOrder(options)
-			console.log('res: ', res)
+
 			let pass = false;
 			if (res.success || res.error) {
 				pass = true
