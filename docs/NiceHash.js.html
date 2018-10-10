@@ -107,8 +107,14 @@ class NiceHash {
 	constructor(api_key, api_id) {
 		this.base_url = "https://api.nicehash.com/api";
 
-		this.key = api_key
-		this.id = api_id
+		if (api_key &amp;&amp; (api_key.api_key || api_key.key)) {
+			this.key = api_key.api_key || api_key.key
+			this.id = api_key.api_id || api_key.id
+		} else {
+			this.key = api_key
+			this.id = api_id
+		}
+
 		this.apikey = {key: this.key, id: this.id}
 	}
 
