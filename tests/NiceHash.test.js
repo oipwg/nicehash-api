@@ -20,7 +20,7 @@ describe('NiceHash', () => {
 	describe('Public', () => {
 		it('get current global stats', async () => {
 			let api = new NiceHash(apiKey.key, apiKey.id);
-			let location = 1;
+			let location = 0;
 			let res = await api.getCurrentGlobalStats(location)
 			expect(res.length).toEqual(34)
 		});
@@ -85,10 +85,10 @@ describe('NiceHash', () => {
 			//ToDo: create a successful order
 			let api = new NiceHash(apiKey.key, apiKey.id);
 			let options = {
-				pool_host: "snowflake.oip.fun",
-				pool_port: 3043,
+				pool_host: "thecoin.pw",
+				pool_port: 3977,
 				pool_pass: "x",
-				pool_user: "FNKgT3PpzVpWghAUJm4er5GLKu85ad42KD"
+				pool_user: "bitspill.1"
 			}
 			let res = await api.createOrder(options)
 			console.log('res: ', res)
