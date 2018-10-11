@@ -168,7 +168,7 @@ describe('NiceHash', () => {
 			let api = new NiceHash(apiKey.key, apiKey.id);
 			let res = await api.getBalance()
 			res = parseFloat(res)
-			expect(typeof res === 'number').toBeTruthy()
+			expect(res).not.toBeNaN()
 		});
 	});
 });
