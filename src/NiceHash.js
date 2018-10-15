@@ -364,22 +364,21 @@ class NiceHash {
 
 	/**
 	 * Remove existing order.
-	 * @param options
-	 * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-	 * @param {string|number} options.algo="scrypt" - Algorithm name or ID
-	 * @param {string|number} options.order - Order ID
+	 * @param {string|number} location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
+	 * @param {string|number} algo="scrypt" - Algorithm name or ID
+	 * @param {string|number} order - Order ID
 	 * @async
 	 * @returns {Promise<Object>}
 	 */
-	async removeOrder(options = {}) {
+	async removeOrder(id, location, algo) {
 		if (!this.id || !this.key)
 			throw new Error('Must provide api key and api id on initialize')
-		options = {
+		let options = {
 			method: "orders.remove",
 			...this.apikey,
-			location: options.location || 0,
-			algo: checkAlgo(options.algo) || 0,
-			order: options.order,
+			location: location || 1,
+			algo: checkAlgo(algo) || 0,
+			order: id,
 		}
 		let api = this.api("", options);
 		try {
