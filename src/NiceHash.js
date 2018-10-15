@@ -324,10 +324,7 @@ class NiceHash {
 		}
 		let api = this.api("", options);
 		try {
-			let res = (await api.get()).data;
-			if (res.result) {
-				return res.result
-			}
+			return (await api.get()).data;
 		} catch (err) {
 			throw new Error(`Failed to create orders: ${err}`)
 		}
