@@ -66,3 +66,5 @@ typings/
 
 # MiningRigRentals API Key and Secret
 apikey.js
+
+config.js 

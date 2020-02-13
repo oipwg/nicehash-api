@@ -1,35 +1,44 @@
 {
-  "name": "nicehash-api",
-  "version": "1.1.4",
-  "description": "javascript wrapper for nicehash api",
-  "main": "lib/index.js",
-  "scripts": {
-    "compile": "npx babel src --out-dir lib",
-    "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
-    "prepare": "npm run generate-docs && npm run compile",
-    "test": "jest --runInBand"
-  },
-  "author": "Ohryan",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oipwg/nicehash-api.git"
-  },
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "dotenv": "^6.0.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.1.0",
-    "@babel/core": "^7.1.0",
-    "babel-core": "^7.0.0-bridge.0",
-    "@babel/preset-env": "^7.1.0",
-    "babel-jest": "^23.6.0",
-    "jest": "^23.6.0",
-    "jsdoc": "^3.5.5",
-    "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
-  },
-  "jest": {
-    "testEnvironment": "node"
-  }
+    "name": "nicehash-api",
+    "version": "2.0.0",
+    "description": "javascript wrapper for nicehash api",
+    "main": "lib/index.js",
+    "scripts": {
+        "compile": "npx babel src --out-dir lib",
+        "generate-docs": "node_modules/.bin/jsdoc --readme ./README.md -c jsdoc.json",
+        "prepare": "npm run generate-docs && npm run compile",
+        "test-all": "jest --runInBand",
+        "test": "jest api.test.js"
+    },
+    "author": "iameddieyayaya",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/iameddieyayaya/nicehash-api.git"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "core-js": "^2.6.11",
+        "dotenv": "^6.0.0",
+        "lodash": "^4.17.15",
+        "nicehash-api": "^1.1.4"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.1.0",
+        "@babel/core": "^7.1.0",
+        "@babel/preset-env": "^7.1.0",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^25.1.0",
+        "jest": "^25.1.0",
+        "jsdoc": "^3.6.3",
+        "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
+        "crypto-js": "^3.1.9-1",
+        "esm": "^3.2.25",
+        "qs": "^6.7.0",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "request-promise-native": "^1.0.7"
+    },
+    "jest": {
+        "testEnvironment": "node"
+    }
 }
