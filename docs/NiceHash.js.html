@@ -76,7 +76,7 @@
       NiceHash
     </h3>
 
-    <h3>Classes</h3><ul><li id="NiceHash-nav"><a href="NiceHash.html">NiceHash</a><ul class='methods'><li data-type="method" id="NiceHash-api-nav"><a href="NiceHash.html#api">api</a></li><li data-type="method" id="NiceHash-createOrder-nav"><a href="NiceHash.html#createOrder">createOrder</a></li><li data-type="method" id="NiceHash-decreaseOrderPrice-nav"><a href="NiceHash.html#decreaseOrderPrice">decreaseOrderPrice</a></li><li data-type="method" id="NiceHash-getBalance-nav"><a href="NiceHash.html#getBalance">getBalance</a></li><li data-type="method" id="NiceHash-getBuyInfo-nav"><a href="NiceHash.html#getBuyInfo">getBuyInfo</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats-nav"><a href="NiceHash.html#getCurrentGlobalStats">getCurrentGlobalStats</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats24h-nav"><a href="NiceHash.html#getCurrentGlobalStats24h">getCurrentGlobalStats24h</a></li><li data-type="method" id="NiceHash-getMultiAlgoInfo-nav"><a href="NiceHash.html#getMultiAlgoInfo">getMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getOrders-nav"><a href="NiceHash.html#getOrders">getOrders</a></li><li data-type="method" id="NiceHash-getOrdersForAlgorithm-nav"><a href="NiceHash.html#getOrdersForAlgorithm">getOrdersForAlgorithm</a></li><li data-type="method" id="NiceHash-getProviderPayments-nav"><a href="NiceHash.html#getProviderPayments">getProviderPayments</a></li><li data-type="method" id="NiceHash-getProviderStats-nav"><a href="NiceHash.html#getProviderStats">getProviderStats</a></li><li data-type="method" id="NiceHash-getProviderStatsEx-nav"><a href="NiceHash.html#getProviderStatsEx">getProviderStatsEx</a></li><li data-type="method" id="NiceHash-getSingleMultiAlgoInfo-nav"><a href="NiceHash.html#getSingleMultiAlgoInfo">getSingleMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getWorkersStats-nav"><a href="NiceHash.html#getWorkersStats">getWorkersStats</a></li><li data-type="method" id="NiceHash-refillOrder-nav"><a href="NiceHash.html#refillOrder">refillOrder</a></li><li data-type="method" id="NiceHash-removeOrder-nav"><a href="NiceHash.html#removeOrder">removeOrder</a></li><li data-type="method" id="NiceHash-setOrderLimit-nav"><a href="NiceHash.html#setOrderLimit">setOrderLimit</a></li><li data-type="method" id="NiceHash-setOrderPrice-nav"><a href="NiceHash.html#setOrderPrice">setOrderPrice</a></li><li data-type="method" id="NiceHash-testAuthorization-nav"><a href="NiceHash.html#testAuthorization">testAuthorization</a></li></ul></li></ul><h3 id="global-nav">Global</h3><ul><li><a href="global.html#createNonce">createNonce</a></li></ul>
+    
   </nav>
 
   <div id="main">
@@ -91,838 +91,778 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>import _ from 'lodash';
-import CryptoJS from 'crypto-js';
-import axios from 'axios';
-import algorithms from './algorithms';
-import config from '../config';
+    <pre class="prettyprint source linenums"><code>import CryptoJS from 'crypto-js'
+import request from 'request-promise-native'
+import qs from 'qs'
+import algorithms from './algorithms'
 
-const API_BASE_URL = 'https://api2.nicehash.com/';
-const API_TIME_URL = '';
-const axiosConfig = {
-  baseURL: API_BASE_URL,
-  timeout: 1000 * 10
-};
-
-/**
- * An importable JavaScript class to make REST requests to the NiceHash APi
- */
-
-//import { API_KEY, API_SECRET, API_ID } from '../apikey';
+var log = function() {
+    return console.log(...arguments)
+}
 
 function createNonce() {
-  var s = '',
-    length = 32;
-  do {
-    s += Math.random()
-      .toString(36)
-      .substr(2);
-  } while (s.length &lt; length);
-  s = s.substr(0, length);
-  return s;
+    var s = '',
+        length = 32
+    do {
+        s += Math.random()
+            .toString(36)
+            .substr(2)
+    } while (s.length &lt; length)
+    s = s.substr(0, length)
+    return s
 }
 
 const getAuthHeader = (
-  apiKey,
-  apiSecret,
-  time,
-  nonce,
-  organizationId = '',
-  request = {}
+    apiKey,
+    apiSecret,
+    time,
+    nonce,
+    organizationId = '',
+    request = {}
 ) => {
-  const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret);
+    const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
 
-  hmac.update(apiKey);
-  hmac.update('\0');
-  hmac.update(time);
-  hmac.update('\0');
-  hmac.update(nonce);
-  hmac.update('\0');
-  hmac.update('\0');
-  if (organizationId) hmac.update(organizationId);
-  hmac.update('\0');
-  hmac.update('\0');
-  hmac.update(request.method);
-  hmac.update('\0');
-  hmac.update(request.path);
-  hmac.update('\0');
-  if (request.query)
-    hmac.update(
-      typeof request.query == 'object'
-        ? qs.stringify(request.query)
-        : request.query
-    );
-  if (request.body) {
-    hmac.update('\0');
-    hmac.update(
-      typeof request.body == 'object'
-        ? JSON.stringify(request.body)
-        : request.body
-    );
-  }
-
-  return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex);
-};
-
-class NiceHash {
-  /**
-   * instantiate a NiceHash class that you can use to make REST requests to the NiceHash API
-   * @param {string} apiKey - NiceHash api key
-   * @param {string|number} organizationId- NiceHash api id
-   * @param {string} apiSecret - NiceHash api secret
-   */
-
-  constructor({ locale, apiHost, apiKey, orgId }) {
-    /**
-     * Creates a new client
-     * @param {object} options
-     * @param options.apiKey - API Key
-     * @param options.apiSecret - API Secret
-     * @param options.orgsnizationId - Organization Id
-     */
-
-    this.locale = locale || 'en';
-    this.host = apiHost;
-    this.key = apiKey;
-    this.secret = apiSecret;
-    this.org = orgId;
-    this.localTimeDiff = null;
-
-    //todo: delme
-    // this.apiKey = _.get(options, 'apiKey');
-    // this.apiSecret = _.get(options, 'apiSecret');
-    // this.organizationId = _.get(options, 'organizationId', '');
-    // this.axios = axios.create(axiosConfig);
-  }
-
-  //! ----------------------------PUBLIC----------------------------------
-
-  getTime() {
-    return request({
-      uri: this.host + '/api/v2/time',
-      json: true
-    }).then(res => {
-      this.localTimeDiff = res.serverTime - +new Date();
-      this.time = res.serverTime;
-      return res;
-    });
-  }
-
-  apiCall(method, path, { query, body, time } = {}) {
-    if (this.localTimeDiff === null) {
-      return Promise.reject(new Error('Get server time first .getTime()'));
-    }
-
-    // query in path
-    var [pathOnly, pathQuery] = path.split('?');
-    if (pathQuery) query = { ...qs.parse(pathQuery), ...query };
-
-    const nonce = createNonce();
-    const timestamp = (time || +new Date() + this.localTimeDiff).toString();
-    const options = {
-      uri: this.host + pathOnly,
-      method: method,
-      headers: {
-        'X-Request-Id': nonce,
-        'X-User-Agent': 'NHNodeClient',
-        'X-Time': timestamp,
-        'X-Nonce': nonce,
-        'X-User-Lang': this.locale,
-        'X-Organization-Id': this.org,
-        'X-Auth': getAuthHeader(
-          this.key,
-          this.secret,
-          timestamp,
-          nonce,
-          this.org,
-          {
-            method,
-            path: pathOnly,
-            query,
-            body
-          }
+    hmac.update(apiKey)
+    hmac.update('\0')
+    hmac.update(time)
+    hmac.update('\0')
+    hmac.update(nonce)
+    hmac.update('\0')
+    hmac.update('\0')
+    if (organizationId) hmac.update(organizationId)
+    hmac.update('\0')
+    hmac.update('\0')
+    hmac.update(request.method)
+    hmac.update('\0')
+    hmac.update(request.path)
+    hmac.update('\0')
+    if (request.query)
+        hmac.update(
+            typeof request.query == 'object'
+                ? qs.stringify(request.query)
+                : request.query
         )
-      },
-      qs: query,
-      body,
-      json: true
-    };
-
-    return request(options);
-  }
-
-  get(path, options) {
-    return this.apiCall('GET', path, options);
-  }
-
-  post(path, options) {
-    return this.apiCall('POST', path, options);
-  }
-
-  put(path, options) {
-    return this.apiCall('PUT', path, options);
-  }
-
-  delete(path, options) {
-    return this.apiCall('DELETE', path, options);
-  }
-
-  // ! -----------------------
-
-  /**
-   * Test Authorization
-   * @async
-   * @returns {Promise&lt;Boolean>}
-   */
-
-  testAuthorization() {
-    console.log(this.apiKey);
-    return !!this.apiKey &amp;&amp; !!this.apiSecret;
-  }
-
-  getAuthParams() {
-    return { key: this.apiKey, seccret: this.apiSecret };
-  }
-
-  getRandomString() {
-    return (
-      Math.random()
-        .toString(36)
-        .substring(2, 15) +
-      Math.random()
-        .toString(36)
-        .substring(2, 15)
-    );
-  }
-
-  generateInputBuffer(inputList) {
-    // Generate list of Buffer
-    let bufferList = [];
-    for (let i = 0; i &lt; inputList.length; i++) {
-      if (inputList[i] != '') {
-        bufferList.push(Buffer.from(inputList[i], 'latin1')); // assuming ISO-8859-1 and LATIN_1 are the same Charset
-      }
-
-      // Add zero byte (0x00) seperator between bytes of input's ordered fields
-      if (i != inputList.length - 1) {
-        bufferList.push(Buffer.from([0x00]));
-      }
+    if (request.body) {
+        hmac.update('\0')
+        hmac.update(
+            typeof request.body == 'object'
+                ? JSON.stringify(request.body)
+                : request.body
+        )
     }
 
-    // Join all Buffer in list
-    return Buffer.concat(bufferList);
-  }
-
-  generateHmacSha256Signature(inputList) {
-    return 'signature';
-  }
-
-  async getHeaders(httpMethod, requestPath, params) {
-    return 'headers';
-  }
-
-  getHeadersUnsigned() {
-    return {
-      'user-agent': `NiceHashJs/${pkg.version} (https://github.com/dannychua/nicehashjs2)`
-    };
-  }
-
-  getRequestPromise(httpMethod, requestPath, params) {
-    const payload = _.merge(
-      { headers: this.getHeaders(httpMethod, requestPath, params) },
-      { params: params }
-    );
-
-    let api = this.api('');
-
-    console.log('payload is', payload);
-    console.log('api', api);
-    console.log('this', this.api);
-    console.log('axios', this.axios);
-
-    return this.axios.get(requestPath, payload);
-  }
-
-  getUnsignedRequestPromise(httpMethod, requestPath, params) {
-    const payload = _.merge(
-      { headers: this.getHeadersUnsigned() },
-      { params: params }
-    );
-    return this.api.get(requestPath, payload);
-  }
-
-  /**
-   * Get current profitability (price) and hashing speed for all algorithms. Refreshed every 30 seconds.
-   * ${number} [location] - 0 for Europe, 1 for USA. Both if omitted.
-   * @async
-   * @return {Promise&lt;Array.&lt;Object>>}
-   */
-  async getCurrentGlobalStats(location) {
-    let params = {
-      method: 'GET',
-      location
-    };
-
-    let api = this.api('main/api/v2/public/stats/global/current', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.algos) {
-        for (let stat of res.algos) {
-          stat.algos = algorithms[stat.a];
-        }
-
-        return res.algos;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get current global state: ${err}`);
-    }
-  }
-
-  // async getAllAlgos() {
-  // https://api2.nicehash.com/main/api/v2/mining/algorithms/
-  //   try {
-  //     let res = await this.api.get().data;
-
-  //     console.log(res);
-  //   } catch (error) {}
-  // }
-
-  /**
-   * Get average profitability (price) and hashing speed for all algorithms in past 24 hours.
-   * @async
-   * @return {Promise&lt;Array.&lt;Object>>}
-   */
-  async getCurrentGlobalStats24h() {
-    let params = {
-      method: 'GET'
-    };
-    let api = this.api('main/api/v2/public/stats/global/24h', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.algos) {
-        for (let stat of res.algos) {
-          stat.algos = algorithms[stat.a];
-        }
-        return res.algos;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get current global state: ${err}`);
-    }
-  }
-
-  /**
-   * Get current stats for provider for all algorithms. Refreshed every 30 seconds. It also returns past 56 payments
-   * @param {string} addr - Provider's BTC address.
-   * @async
-   * @return {Promise&lt;Object>}
-   */
-  async getProviderStats(addr) {
-    let params = {
-      method: 'GET',
-      addr
-    };
-
-    let api = this.api('main/api/v2/public/stats/provider', params);
-
-    try {
-      let res = (await api.get()).data;
-      return res.result;
-    } catch (err) {
-      throw new Error(`Failed to get current global state: ${err}`);
-    }
-  }
-
-  /**
-   * Get detailed stats for provider for all algorithms including history data and payments in past 7 days.
-   * @param {string} addr - Provider's BTC address.
-   * @param {number} [from] - Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)
-   * @async
-   * @return {Promise&lt;Object>}
-   */
-  async getProviderStatsEx(addr, from) {
-    let params = {
-      method: 'stats.provider.ex',
-      addr,
-      from
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      return res.result;
-    } catch (err) {
-      throw new Error(`Failed to get current global state: ${err}`);
-    }
-  }
-
-  /**
-   * Get payments for provider.
-   * @param {string} addr - Provider's BTC address.
-   * @param {number} [from] - Get history data from this time (UNIX timestamp). This parameter is optional and is by default considered to be 0 (return complete history)
-   * @async
-   * @return {Promise&lt;Object>}
-   */
-  async getProviderPayments(addr, from) {
-    let params = {
-      method: 'stats.provider.payments',
-      addr,
-      from
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      return res.result;
-    } catch (err) {
-      throw new Error(`Failed to get payments for provider: ${err}`);
-    }
-  }
-
-  /**
-   * Get detailed stats for provider's workers (rigs).
-   * @param {string} addr - Provider's BTC address;
-   * @param {number|number} algo - Algorithm marked with ID or its name
-   * @async
-   * @return {Promise&lt;Object>}
-   */
-  async getWorkersStats(addr, algo) {
-    let params = {
-      method: 'stats.provider.workers',
-      addr,
-      algo: checkAlgo(algo)
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      return res.result;
-    } catch (err) {
-      throw new Error(`Failed to get stats for provider's workers: ${err}`);
-    }
-  }
-
-  /**
-   * Get all orders for certain algorithm. Refreshed every 30 seconds.
-   * @param {number} location - 1 for Europe (NiceHash), 2 for USA (WestHash);
-   * @param {number|string} algo - Algorithm marked with ID or its name.
-   * @async
-   * @return {Promise&lt;Array.&lt;Object>>}
-   */
-  async getOrdersForAlgorithm(location, algo) {
-    let market;
-
-    if (typeof algo === 'number') {
-      algo = convertIDtoAlgo(algo);
-    }
-
-    switch (location) {
-      case 1:
-        market = 'EU';
-        break;
-      case 2:
-        market = 'USA';
-        break;
-      default:
-        market = '';
-    }
-
-    let params = {
-      market: market,
-      algorithm: algo.toUpperCase()
-    };
-
-    let api = this.api('main/api/v2/public/orders/', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.list) {
-        return res.list;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get orders for algo: ${err}`);
-    }
-  }
-
-  /**
-   * Get information about Mult-Algorithm Mining
-   * @async
-   * @returns {Promise&lt;Array.&lt;Object>>}
-   */
-  async getMultiAlgoInfo() {
-    let params = {
-      method: 'multialgo.info'
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result.multialgo;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get multi algo info: ${err}`);
-    }
-  }
-
-  /**
-   * Get information about Simple Multi-Algorithm Mining
-   * @async
-   * @returns {Promise&lt;Array.&lt;Object>>}
-   */
-  async getSingleMultiAlgoInfo() {
-    let params = {
-      method: 'simplemultialgo.info'
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result.simplemultialgo;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get single multi algo info: ${err}`);
-    }
-  }
-
-  /**
-   * Get needed information for buying hashing power using NiceHashBot.
-   * @async
-   * @returns {Promise&lt;Array.&lt;Object>>}
-   */
-  async getBuyInfo() {
-    let params = {
-      method: 'buy.info'
-    };
-    let api = this.api('', params);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result.algorithms;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get buy info: ${err}`);
-    }
-  }
-
-  //----------------------------PRIVATE----------------------------------
-  /**
-   * Get all orders for certain algorithm owned by the customer. Refreshed every 30 seconds.
-   * @param {Object} options
-   * @param {number} [options.location=0] - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {number|string} [options.algo="scrypt"] - Algorithm ID or name
-   * @async
-   * @returns {Promise&lt;Array.&lt;Object>>}
-   */
-  async getOrders(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.get',
-      my: '',
-      ...this.apikey,
-      location: options.location || 0,
-      algo: checkAlgo(options.algo) || 0
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result.orders;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get orders: ${err}`);
-    }
-  }
-
-  /**
-   * Create new order. Only standard orders can be created with use of API.
-   * @param options
-   * @param {string} options.pool_host - Pool hostname or IP;
-   * @param {string} options.pool_port - Pool port
-   * @param {string} options.pool_user - Pool username
-   * @param {string} options.pool_pass - Pool password
-   * @param {string|number} [options.location=1] - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} [options.algo='scrypt'] - Algorithm name or ID
-   * @param {string|number} [options.amount=0.005]  - Pay amount in BTC;
-   * @param {string|number} [options.price=] - Price in BTC/GH/day or BTC/TH/day;
-   * @param {string|number} [options.limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
-   * @param {string|number} [options.code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async createOrder(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.create',
-      ...this.apikey,
-      location: options.location || 1,
-      algo: checkAlgo(options.algo) || 0,
-      amount: options.amount || 0.005,
-      price: options.price,
-      limit: options.limit || 0.01,
-      pool_host: options.pool_host,
-      pool_port: options.pool_port,
-      pool_user: options.pool_user,
-      pool_pass: options.pool_pass || 'x',
-      code: options.code || undefined
-    };
-    let api = this.api('', options);
-    try {
-      return (await api.get()).data;
-    } catch (err) {
-      throw new Error(`Failed to create orders: ${err}`);
-    }
-  }
-
-  /**
-   * Create new order. Only standard orders can be created with use of API.
-   * @param options
-   * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} options.algo="scrypt" - Algorithm name or ID
-   * @param {string|number} options.amount - Pay amount in BTC;
-   * @param {string|number} options.order - Order ID
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async refillOrder(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.refill',
-      ...this.apikey,
-      location: options.location || 0,
-      algo: checkAlgo(options.algo) || 0,
-      order: options.order,
-      amount: options.amount
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result;
-      }
-    } catch (err) {
-      throw new Error(`Failed to refill orders: ${err}`);
-    }
-  }
-
-  /**
-   * Remove existing order.
-   * @param {string|number} location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} algo="scrypt" - Algorithm name or ID
-   * @param {string|number} order - Order ID
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async removeOrder(id, location, algo) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    let options = {
-      method: 'orders.remove',
-      ...this.apikey,
-      location: location || 1,
-      algo: checkAlgo(algo) || 0,
-      order: id
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result;
-      }
-    } catch (err) {
-      throw new Error(`Failed to remove orders: ${err}`);
-    }
-  }
-
-  /**
-   * Set new price for the existing order. Only increase is possible.
-   * @param options
-   * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} options.algo="scrypt" - Algorithm name or ID
-   * @param {string|number} options.price - Price in BTC/GH/Day or BTC/TH/Day.
-   * @param {string|number} options.order - Order ID/number
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async setOrderPrice(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.set.price',
-      ...this.apikey,
-      location: options.location || 0,
-      algo: checkAlgo(options.algo) || 0,
-      order: options.order,
-      price: options.price
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result;
-      }
-    } catch (err) {
-      throw new Error(`Failed to set order price: ${err}`);
-    }
-  }
-
-  /**
-   * Decrease price for the existing order. Price decrease possible every 10 minutes
-   * @param options
-   * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} options.algo="scrypt" - Algorithm name or ID
-   * @param {string|number} options.order - Order ID/number
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async decreaseOrderPrice(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.set.price.decrease',
-      ...this.apikey,
-      location: options.location || 0,
-      algo: checkAlgo(options.algo) || 0,
-      order: options.order
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result;
-      }
-    } catch (err) {
-      throw new Error(`Failed to decrease order price: ${err}`);
-    }
-  }
-
-  /**
-   * Set new limit for the existing order.
-   * @param options
-   * @param {string|number} options.location=0 - 0 for Europe (NiceHash), 1 for USA (WestHash);
-   * @param {string|number} options.algo="scrypt" - Algorithm name or ID
-   * @param {string|number} options.amount - Pay amount in BTC;
-   * @param {string|number} options.order - Order ID/number;
-   * @param {string|number} options.limit=0 - Speed limit in GH/s or TH/s (0 for no limit);
-   * @async
-   * @returns {Promise&lt;Object>}
-   */
-  async setOrderLimit(options = {}) {
-    if (!this.id || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    options = {
-      method: 'orders.set.limit',
-      ...this.apikey,
-      location: options.location || 0,
-      algo: checkAlgo(options.algo) || 0,
-      limit: options.limit || 0,
-      order: options.order
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result;
-      }
-    } catch (err) {
-      throw new Error(`Failed to set order limit: ${err}`);
-    }
-  }
-
-  /**
-   * Get current confirmed Bitcoin balance.
-   * @async
-   * @returns {Promise&lt;Number>}
-   */
-  // async getBalance() {
-  //   if (!this.apiKey || !this.apiSecret)
-  //     throw new Error('Must provide api key and api id on initialize');
-  //   let options = {
-  //     method: 'GET',
-  //     headers: {
-  //       API_KEY: this.apiKey,
-  //       'X-Time': getCurrentTime(),
-  //       'X-Nonce': 'dope',
-  //       'X-Orgamization-ID': this.organizationId
-  //     }
-  //   };
-  //   let api = this.api('main/api/v2/accounting/account2/BTC', options);
-  //   try {
-  //     let res = (await api.get()).data;
-  //     if (res.result) {
-  //       return res.result.balance_confirmed;
-  //     }
-  //   } catch (err) {
-  //     throw new Error(`Failed to get balance: ${err}`);
-  //   }
-  // }
-
-  async getBalance() {
-    if (!this.org || !this.key)
-      throw new Error('Must provide api key and api id on initialize');
-    let options = {
-      method: 'balance',
-      ...this.key
-    };
-    let api = this.api('', options);
-    try {
-      let res = (await api.get()).data;
-      if (res.result) {
-        return res.result.balance_confirmed;
-      }
-    } catch (err) {
-      throw new Error(`Failed to get balance: ${err}`);
-    }
-  }
-
-  //-----------------------------UTIL------------------------------------
-  /**
-   * Build initial AxiosInstance with baseURL = "https://api.nicehash.com/api"
-   * @param endpoint
-   * @param {Object} [params]
-   * @returns {AxiosInstance}
-   */
-
-  api(endpoint, params) {
-    return axios.create({
-      baseURL: `${API_BASE_URL}${endpoint}`,
-      timeout: 1000 * 10,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      params
-    });
-  }
+    return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex)
 }
 
+class NicehHashApi {
+    constructor({ locale, apiHost, apiKey, apiSecret, orgId }) {
+        this.locale = locale || 'en'
+        this.host = apiHost
+        this.key = apiKey
+        this.secret = apiSecret
+        this.org = orgId
+        this.localTimeDiff = null
+    }
+
+    getTime() {
+        return request({
+            uri: this.host + '/api/v2/time',
+            json: true,
+        }).then(res => {
+            this.localTimeDiff = res.serverTime - +new Date()
+            this.time = res.serverTime
+            return res
+        })
+    }
+
+    apiCall(method, path, { query, body, time } = {}) {
+        if (this.localTimeDiff === null) {
+            return Promise.reject(new Error('Get server time first .getTime()'))
+        }
+
+        // query in path
+        var [pathOnly, pathQuery] = path.split('?')
+        if (pathQuery) query = { ...qs.parse(pathQuery), ...query }
+
+        const nonce = createNonce()
+        const timestamp = (time || +new Date() + this.localTimeDiff).toString()
+        const options = {
+            uri: this.host + pathOnly,
+            method: method,
+            headers: {
+                'X-Request-Id': nonce,
+                'X-User-Agent': 'NHNodeClient',
+                'X-Time': timestamp,
+                'X-Nonce': nonce,
+                'X-User-Lang': this.locale,
+                'X-Organization-Id': this.org,
+                'X-Auth': getAuthHeader(
+                    this.key,
+                    this.secret,
+                    timestamp,
+                    nonce,
+                    this.org,
+                    {
+                        method,
+                        path: pathOnly,
+                        query,
+                        body,
+                    }
+                ),
+            },
+            qs: query,
+            body,
+            json: true,
+        }
+
+        return request(options)
+    }
+
+    get(path, options) {
+        return this.apiCall('GET', path, options)
+    }
+
+    post(path, options) {
+        return this.apiCall('POST', path, options)
+    }
+
+    put(path, options) {
+        return this.apiCall('PUT', path, options)
+    }
+
+    delete(path, options) {
+        return this.apiCall('DELETE', path, options)
+    }
+
+    /* ----------------------- TEST-------------------------------------- */
+
+    testAuthorization() {
+        if (!!this.key &amp;&amp; !!this.org &amp;&amp; !!this.secret) {
+            this.getTime()
+                .then(res => {
+                    log('good to go 200', res)
+                    return true
+                })
+                .catch(err => {
+                    throw new Error(`Something went wrong... ${err}`)
+                })
+        } else {
+            log('check config file')
+            return false
+        }
+    }
+
+    /* ----------------------- PUBLIC API -------------------------------------- */
+
+    async getCurrentGlobalStats() {
+        this.getTime()
+            .then(() => this.get('/main/api/v2/public/stats/global/current'))
+            .then(res => {
+                if (res.algos) {
+                    for (let stat of res.algos) {
+                        stat.algo = algorithms[stat.a]
+                    }
+                    return res.algos
+                }
+            })
+            .catch(err => {
+                throw new Error(`Failed to get current global stats: ${err}`)
+            })
+    }
+
+    /**
+     * Get average profitability (price) and hashing speed for all algorithms in past 24 hours.
+     * @async
+     * @return {Promise&lt;Array.&lt;Object>>}
+     */
+    async getCurrentGlobalStats24h() {
+        this.getTime()
+            .then(() => this.get('/main/api/v2/public/stats/global/24h'))
+            .then(res => {
+                if (res.algos) {
+                    for (let stat of res.algos) {
+                        stat.algo = algorithms[stat.a]
+                    }
+                    return res.algos
+                }
+            })
+            .catch(err => {
+                throw new Error(
+                    `Failed to get current global stats 24h: ${err}`
+                )
+            })
+    }
+
+    /**
+     * Get all orders for certain algorithm. Refreshed every 30 seconds.
+     * @param {number} location - 1 for Europe (NiceHash), 2 for USA (WestHash);
+     * @param {number|string} algo - Algorithm marked with ID or its name.
+     * @async
+     * @return {Promise&lt;Array.&lt;Object>>}
+     */
+    async getOrdersForAlgorithm(market = 0, algo = 0) {
+        if (typeof algo === 'number') {
+            algo = convertIDtoAlgo(algo)
+        }
+
+        if (typeof market === 'number') {
+            market = convertLocation(market)
+        }
+
+        let query = {
+            market: market,
+            algorithm: algo,
+        }
+
+        this.getTime()
+            .then(() => this.get('/main/api/v2/public/orders/', { query }))
+            .then(res => {
+                return res.list
+            })
+            .catch(err => {
+                throw new Error(
+                    `Failed to get all orders for alogrithm: ${err}`
+                )
+            })
+    }
+
+    /**
+     * Get information about Simple Multi-Algorithm Mining
+     * @async
+     * {
+        miningAlgorithms:[List of mining algorithms ...
+            {
+                paying:string (Big decimal scaled to 8 decimal points)Mining algorithm price ...
+                speed:string (Big decimal scaled to 8 decimal points)Mining algorithm speed ...
+                title:string Title ...
+                algorithm: SCRYPT | SHA256 | SCRYPTNF | X11 | X13 | KECCAK | X15 | NIST5 | NEOSCRYPT | LYRA2RE | WHIRLPOOLX | QUBIT | QUARK | AXIOM | LYRA2REV2 | SCRYPTJANENF16 | BLAKE256R8 | BLAKE256R14 | BLAKE256R8VNL | HODL | DAGGERHASHIMOTO | DECRED | CRYPTONIGHT | LBRY | EQUIHASH | PASCAL | X11GOST | SIA | BLAKE2S | SKUNK | CRYPTONIGHTV7 | CRYPTONIGHTHEAVY | LYRA2Z | X16R | CRYPTONIGHTV8 | SHA256ASICBOOST | ZHASH | BEAM | GRINCUCKAROO29 | GRINCUCKATOO31 | LYRA2REV3 | CRYPTONIGHTR | CUCKOOCYCLE | GRINCUCKAROOD29 | BEAMV2 | X16RV2 | RANDOMXMONERO | EAGLESONG | CUCKAROOM | GRINCUCKATOO32Algorithm ...
+            }
+        ]
+    }       
+     */
+    async getSingleMultiAlgoInfo() {
+        this.getTime()
+            .then(() => this.get('/main/api/v2/public/simplemultialgo/info/'))
+            .then(res => {
+                return res.miningAlgorithms
+            })
+            .catch(err => {
+                throw new Error(`Failed to get single multi algo info ${err}`)
+            })
+    }
+
+    async getBuyInfo() {
+        this.getTime()
+            .then(() => this.get('/main/api/v2/public/buy/info/'))
+            .then(res => {
+                return res.miningAlgorithms
+            })
+            .catch(err => {
+                throw new Error(`Failed to get buy info: ${err}`)
+            })
+    }
+
+    /* ----------------------- PRIVATE API -------------------------------------- */
+
+    //getBalance
+    /**
+     *
+     * @param {string} currency - BTC | ETH | XRP | BCH | LTC | ZEC | DASH | XLM | EOS
+     *                              | USDT | BSV | LINK | BAT | PAX | ZRX | HOT | OMG | REP
+     *                              | NEXO | EURKM | TBTC | TETH | TXRP | TBCH | TLTC | TZEC
+     *                              | TDASH | TXLM | TEOS | TERC | TBSV | TEURKM
+     */
+    // returns list of currency and balance;
+    async getBalance(currency = '') {
+        let query = {
+            currency: currency.toUpperCase(),
+        }
+
+        this.getTime()
+            .then(() => this.get('/main/api/v2/accounting/accounts', { query }))
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get balance: ${err}`)
+            })
+    }
+
+    async getExchangeSetting() {
+        this.getTime()
+            .then(() => this.get('/exchange/api/v2/info/status'))
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get exchange setting: ${err}`)
+            })
+    }
+
+    // not allowed in the U.S.
+    async getOrderBook(marketSymbol = '', limit = 25) {
+        let query = {
+            market: marketSymbol,
+            limit,
+        }
+
+        this.getTime()
+            .then(() => this.get('/exchange/api/v2/orderbook/', { query }))
+            .then(res => {
+                log(res)
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get exchange order book: ${err}`)
+            })
+    }
+
+    async getAlgoSetting() {
+        this.getTime()
+            .then(() => this.get('/main/api/v2/mining/algorithms'))
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get algorithm setting: ${err}`)
+            })
+    }
+
+    //----------------------THEM POOLS----------------------------
+    //! enable buying - api or on website
+    //   CREATE OR EDIT POOL
+    // Create or edit pool info
+    // Required permissions:
+
+    // Marketplace / Manage pools (MAPO)
+    // creates pool - config for user
+    // username is equvilent to flo addy - workername
+    //! potential bug - check for typeof algo
+    async createOrEditPool(
+        id = '',
+        algorithm = 0,
+        name,
+        username,
+        password = 'x',
+        stratumHostname,
+        stratumPort
+    ) {
+        this.getTime()
+            .then(() => {
+                let body = {
+                    algorithm: convertIDtoAlgo(algorithm),
+                    name,
+                    username,
+                    password,
+                    stratumHostname,
+                    stratumPort,
+                    id, //Pool id (Required only if editing pool data)
+                }
+                return this.post('/main/api/v2/pool', { body })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to create or edit pool: ${err}`)
+            })
+    }
+
+    async getPoolInfo(poolId) {
+        this.getTime()
+            .then(() => {
+                return this.get(`/main/api/v2/pool/${poolId}`)
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get pool info: ${err}`)
+            })
+    }
+
+    // delete pool - pass poolId
+    async deletePool(poolId) {
+        this.getTime()
+            .then(() => {
+                return this.delete(`/main/api/v2/pool/${poolId}`)
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to delete pool: ${err}`)
+            })
+    }
+
+    async getPools(size = 100, page = 0) {
+        let query = {
+            size,
+            page,
+        }
+
+        this.getTime()
+            .then(() => {
+                return this.get(`/main/api/v2/pools/`, { query })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to get pools: ${err}`)
+            })
+    }
+
+    async verifyPool(
+        password,
+        username,
+        stratumPort,
+        stratumHost,
+        miningAlgorithm = 'SCRYPT',
+        poolVerificationServiceLocation = 'USA'
+    ) {
+        let body = {
+            password,
+            username,
+            stratumPort, //number
+            stratumHost,
+            miningAlgorithm: miningAlgorithm.toUpperCase(),
+            poolVerificationServiceLocation: poolVerificationServiceLocation.toUpperCase(), //EUROPE | USA
+        }
+
+        this.getTime()
+            .then(() => {
+                return this.post(`/main/api/v2/pools/verify/`, { body })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to verify pool: ${err}`)
+            })
+    }
+
+    //---------------------- HASHPOWER ORDERS ----------------------------
+
+    /*
+CREATE ORDER
+Create order
+Headers: X-Request-Id: (required, unique identifier of specific request, client should have local awareness that some app action should be done only once on server, if for some reason request is processed by server and client does not know anything about it (request failed). This ID will provide server information that it will not repeat action if it was already processed)
+
+Required permissions:
+Marketplace / Place, refill and cancel hashpower orders (PRCO)
+  */
+
+    async getOrders(
+        algo,
+        status = '',
+        active = '',
+        market = 'EU',
+        ts,
+        op,
+        maxResults
+    ) {
+        if (typeof algo === 'number') {
+            algo = convertIDtoAlgo(algo)
+        }
+
+        if (typeof market === 'number') {
+            market = convertLocation(market)
+        }
+
+        this.getTime()
+            .then(() => {
+                let query = {
+                    algorithm: algo ? algo.toUpperCase() : '', //optional
+                    status, //optional
+                    active, //optional - /* 	Show only active or not active orders (optional, active orders: PENDING, ACTIVE, PENDING_CANCELLATION, not active orders: CANCELLED, EXPIRED, ERROR, COMPLETED, ...) */
+                    market, //optional
+                    ts: ts || this.time, //! right now;
+                    op: op || 'LE', //Less equal to.
+                    limit: maxResults || 100,
+                }
+                return this.get('/main/api/v2/hashpower/myOrders/', { query })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to create order: ${err}`)
+            })
+    }
+
+    /**
+     * Create new order. Only standard orders can be created with use of API.
+     * @param {string} type - Hash power order type
+     * @param {string|number} [limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
+     * @param {string} poolId - Pool id
+     * @param {string|number} [price=] - Price in BTC/GH/day or BTC/TH/day;
+     * @param {string} marketFactor - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
+     * @param {string} displayMarketFactor - Used display market factor
+     * @param {string|} amount=0.005  - Pay amount in BTC;
+     * @param {string} algorithm - - Algorithm name or ID
+     * @param {number} market - 1 for Europe (NiceHash), 2 for USA (WestHash)
+     * @param {string|number} [code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
+     * @async
+     * @returns {Promise&lt;Object> created order}
+     * 
+     * 
+amount:string (Big decimal scaled to 8 decimal points)Amount in BTC ...
+algorithm:SCRYPT | SHA256 | SCRYPTNF | X11 | X13 | KECCAK | X15 | NIST5 | NEOSCRYPT | LYRA2RE | WHIRLPOOLX | QUBIT | QUARK | AXIOM | LYRA2REV2 | SCRYPTJANENF16 | BLAKE256R8 | BLAKE256R14 | BLAKE256R8VNL | HODL | DAGGERHASHIMOTO | DECRED | CRYPTONIGHT | LBRY | EQUIHASH | PASCAL | X11GOST | SIA | BLAKE2S | SKUNK | CRYPTONIGHTV7 | CRYPTONIGHTHEAVY | LYRA2Z | X16R | CRYPTONIGHTV8 | SHA256ASICBOOST | ZHASH | BEAM | GRINCUCKAROO29 | GRINCUCKATOO31 | LYRA2REV3 | CRYPTONIGHTR | CUCKOOCYCLE | GRINCUCKAROOD29 | BEAMV2 | X16RV2 | RANDOMXMONERO | EAGLESONG | CUCKAROOM | GRINCUCKATOO32Algorithm ...
+market:EU | USAMarket ...
+}
+     */
+
+    async createOrder(
+        type = 'STANDARD',
+        limit,
+        poolId,
+        price,
+        marketFactor,
+        displayMarketFactor,
+        amount,
+        market,
+        algorithm = 'SCRYPT'
+    ) {
+        if (typeof algo === 'number') {
+            algo = convertIDtoAlgo(algo)
+        }
+
+        if (typeof market === 'number') {
+            market = convertLocation(market)
+        }
+
+        this.getTime()
+            .then(() => {
+                var body = {
+                    type: type.toUpperCase(),
+                    limit,
+                    poolId,
+                    price,
+                    marketFactor,
+                    displayMarketFactor,
+                    amount,
+                    market: market,
+                    algorithm: algorithm.toUpperCase(),
+                }
+
+                return this.post('/main/api/v2/hashpower/order', { body })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to create order: ${err}`)
+            })
+    }
+
+    /**
+     * @param {string} orderId - Order Id
+     * @param {string|number} amount - amount in BTC
+     */
+    async refillOrder(orderId, amount) {
+        this.getTime()
+            .then(() => {
+                var body = {
+                    amount,
+                }
+                return this.post(
+                    `/main/api/v2/hashpower/order/${orderId}/refill/`,
+                    { body }
+                )
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to refill order: ${err}`)
+            })
+    }
+
+    async updatePriceandLimit(
+        orderId,
+        limit,
+        price,
+        marketFactor = '1000000000000',
+        displayMarketFactor = 'TH'
+    ) {
+        this.getTime()
+            .then(() => {
+                var body = {
+                    marketFactor: marketFactor || '1000000000000',
+                    displayMarketFactor: displayMarketFactor || 'TH',
+                    limit,
+                    price,
+                }
+                return this.post(
+                    `/main/api/v2/hashpower/order/${orderId}/updatePriceAndLimit/`,
+                    { body }
+                )
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to update price and limit ${err}`)
+            })
+    }
+
+    async cancelOrder(orderId) {
+        this.getTime()
+            .then(() => {
+                return this.delete(`/main/api/v2/hashpower/order/${orderId}/`)
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Failed to cancel order: ${err}`)
+            })
+    }
+
+    async setOrderPrice() {
+        log('not built')
+    }
+
+    async decreaseOrderPrice() {
+        log('not built')
+    }
+
+    async setOrderLimit() {
+        log('not built')
+    }
+
+    //----------------------------- Withdrawl ------------------------------------
+
+    async createWithdrawlAddress(
+        // token, optional 2FA
+        type,
+        address,
+        name,
+        currency
+    ) {
+        let body = {
+            type: type.toUpperCase(),
+            address,
+            name,
+            currency: currency.toUpperCase(),
+        }
+
+        this.getTime()
+            .then(() => {
+                return this.post(`/main/api/v2/accounting/withdrawalAddress/`, {
+                    body,
+                })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Fail create withdrawl address ${err}`)
+            })
+    }
+
+    async createWithdrawlRequest(withdrawalAddressId, amount, currency) {
+        let body = {
+            withdrawalAddressId,
+            amount,
+            currency: currency.toUpperCase(),
+        }
+
+        this.getTime()
+            .then(() => {
+                return this.post(`/main/api/v2/accounting/withdrawal/`, {
+                    body,
+                })
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Fail create withdrawl address ${err}`)
+            })
+    }
+
+    async getWithdrawalAddresses(currency, size = 100, page = 0) {
+        let query = {
+            currency: currency.toUpperCase(),
+            size,
+            page,
+        }
+
+        this.getTime()
+            .then(() => {
+                return this.get(
+                    `/main/api/v2/accounting/withdrawalAddresses/`,
+                    { query }
+                )
+            })
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(`Fail get withdrawal addys ${err}`)
+            })
+    }
+
+    // Deposit Address
+    async getDepositAddresses(currency) {
+        let query = {
+            currency: currency.toUpperCase(),
+        }
+
+        this.getTime()
+            .then(() =>
+                this.get('/main/api/v2/accounting/depositAddresses/', { query })
+            )
+            .then(res => {
+                return res
+            })
+            .catch(err => {
+                throw new Error(
+                    `Failed to get deposit addresses, pass in currency: ${err}`
+                )
+            })
+    }
+}
 //-----------------------------Helper Functions------------------------------------
 const checkAlgo = algoName => {
-  if (typeof algoName === 'string') {
-    return convertAlgoToID(algoName);
-  }
-  return algoName;
-};
+    if (typeof algoName === 'string') {
+        return convertAlgoToID(algoName)
+    }
+    return algoName
+}
 
 const convertIDtoAlgo = algo => {
-  if (typeof algo === 'number') {
-    return algorithms[algo];
-  }
-};
+    if (typeof algo === 'number') {
+        return algorithms[algo].toUpperCase()
+    }
+}
 
 const convertAlgoToID = algo => {
-  if (typeof algo === 'string') {
-    for (let id in algorithms) {
-      if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
-        return id;
-      }
+    if (typeof algo === 'string') {
+        for (let id in algorithms) {
+            if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
+                return id
+            }
+        }
+    } else if (typeof algo === 'number') {
+        if (algorithms[algo]) return algorithms.algo
+    } else return algo
+}
+
+const convertLocation = location => {
+    switch (location) {
+        case 1:
+            return 'EU'
+        case 2:
+            return 'USA'
+        default:
+            return ''
     }
-  } else if (typeof algo === 'number') {
-    if (algorithms[algo]) return algorithms.algo;
-  } else return algo;
-};
+}
 
-const getCurrentTime = () => {
-  return Date.now().toString();
-};
-
-export default NiceHash;
+export default NicehHashApi
 </code></pre>
   </article>
 </section>

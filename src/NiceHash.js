@@ -61,7 +61,7 @@ const getAuthHeader = (
     return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex)
 }
 
-class NicehHashApi {
+class NicehHash {
     constructor({ locale, apiHost, apiKey, apiSecret, orgId }) {
         this.locale = locale || 'en'
         this.host = apiHost
@@ -769,4 +769,4 @@ const convertLocation = location => {
     }
 }
 
-export default NicehHashApi
+export default NicehHash

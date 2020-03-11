@@ -74,7 +74,7 @@
       NiceHash
     </h3>
 
-    <h3>Classes</h3><ul><li id="NiceHash-nav"><a href="NiceHash.html">NiceHash</a><ul class='methods'><li data-type="method" id="NiceHash-api-nav"><a href="NiceHash.html#api">api</a></li><li data-type="method" id="NiceHash-createOrder-nav"><a href="NiceHash.html#createOrder">createOrder</a></li><li data-type="method" id="NiceHash-decreaseOrderPrice-nav"><a href="NiceHash.html#decreaseOrderPrice">decreaseOrderPrice</a></li><li data-type="method" id="NiceHash-getBalance-nav"><a href="NiceHash.html#getBalance">getBalance</a></li><li data-type="method" id="NiceHash-getBuyInfo-nav"><a href="NiceHash.html#getBuyInfo">getBuyInfo</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats-nav"><a href="NiceHash.html#getCurrentGlobalStats">getCurrentGlobalStats</a></li><li data-type="method" id="NiceHash-getCurrentGlobalStats24h-nav"><a href="NiceHash.html#getCurrentGlobalStats24h">getCurrentGlobalStats24h</a></li><li data-type="method" id="NiceHash-getMultiAlgoInfo-nav"><a href="NiceHash.html#getMultiAlgoInfo">getMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getOrders-nav"><a href="NiceHash.html#getOrders">getOrders</a></li><li data-type="method" id="NiceHash-getOrdersForAlgorithm-nav"><a href="NiceHash.html#getOrdersForAlgorithm">getOrdersForAlgorithm</a></li><li data-type="method" id="NiceHash-getProviderPayments-nav"><a href="NiceHash.html#getProviderPayments">getProviderPayments</a></li><li data-type="method" id="NiceHash-getProviderStats-nav"><a href="NiceHash.html#getProviderStats">getProviderStats</a></li><li data-type="method" id="NiceHash-getProviderStatsEx-nav"><a href="NiceHash.html#getProviderStatsEx">getProviderStatsEx</a></li><li data-type="method" id="NiceHash-getSingleMultiAlgoInfo-nav"><a href="NiceHash.html#getSingleMultiAlgoInfo">getSingleMultiAlgoInfo</a></li><li data-type="method" id="NiceHash-getWorkersStats-nav"><a href="NiceHash.html#getWorkersStats">getWorkersStats</a></li><li data-type="method" id="NiceHash-refillOrder-nav"><a href="NiceHash.html#refillOrder">refillOrder</a></li><li data-type="method" id="NiceHash-removeOrder-nav"><a href="NiceHash.html#removeOrder">removeOrder</a></li><li data-type="method" id="NiceHash-setOrderLimit-nav"><a href="NiceHash.html#setOrderLimit">setOrderLimit</a></li><li data-type="method" id="NiceHash-setOrderPrice-nav"><a href="NiceHash.html#setOrderPrice">setOrderPrice</a></li><li data-type="method" id="NiceHash-testAuthorization-nav"><a href="NiceHash.html#testAuthorization">testAuthorization</a></li></ul></li></ul><h3 id="global-nav">Global</h3><ul><li><a href="global.html#createNonce">createNonce</a></li></ul>
+    
   </nav>
 
   <div id="main">
@@ -115,7 +115,18 @@ from the <code>nicehash-api</code> module.</p>
 <p>After you have imported the api, you can go ahead and spawn a new
 <code>NiceHash</code> Object. You must pass it your NiceHash api key and id or else
 the class will not be able to make the API calls.</p>
-<pre class="prettyprint source lang-javascript"><code>let NiceHash = new NiceHash(api_key, api_id)
+<pre class="prettyprint source lang-javascript"><code>let NiceHash = new NiceHash(config)
+</code></pre>
+<h1>Create config.js file</h1>
+<pre class="prettyprint source lang-javascript"><code>export default {
+    apiHost: 'https://api2.nicehash.com', //use https://api-test.nicehash.com for development
+    apiKey: '',
+    //get it here: https://test.nicehash.com/my/settings/keys
+    //or
+    //https://new.nicehash.com/my/settings/keys
+    apiSecret: '',
+    orgId: '',
+}
 </code></pre>
 <h2>Using your first method</h2>
 <p>To make sure the class was initiliazed correctly, we can test authorization by
@@ -124,15 +135,99 @@ calling:</p>
 </code></pre>
 <p>This library wraps every function in a es7 async/await wrapper. If instead you
 wish to deal with promises in a different way, feel free to do:</p>
-<pre class="prettyprint source lang-javascript"><code>NiceHash.testAuthorization().then(success => success).catch(err => err)
+<pre class="prettyprint source lang-javascript"><code>NiceHash.testAuthorization()
+    .then(success => success)
+    .catch(err => err)
 </code></pre>
 <p>We recommend using <code>async/await</code> as it makes the code more terse. <code>await</code> will
 resolve the promise in a synchronous manner that allows one to expect deterministic
 behavior.</p>
 <p>If <code>NiceHash.testAuthorization()</code> returns true then you are good to go!
 Check out the rest of the documentation to see what else you can do!</p>
-<h2>Documentation</h2>
+<h2>Documentation (not up to date);</h2>
 <p>https://oipwg.github.io/nicehash-api/</p>
+<h3>Current list of methods</h3>
+<p>all params are type string - unless specified.</p>
+<pre class="prettyprint source lang-javascript"><code>
+// public api
+.getCurrentGlobalStats()
+.getCurrentGlobalStats24h()
+.getOrdersForAlgorithm(market, algorithm)
+.getSingleMultiAlgoInfo()
+.getBuyInfo()
+
+// private api
+.getBalance(currency) //currency param optional
+.getExchangeSetting()
+.getAlgoSetting()
+
+// pools
+.createOrEditPool(
+        id, // //Pool id (Required only if editing pool data)
+        algorithm // Number | String
+        name,
+        username,
+        password = 'x',
+        stratumHostname,
+        stratumPort //Number
+    )
+.getPoolInfo(poolId)
+.deletePool(poolId)
+.getPools(size = 100, page = 0) //default params
+.verifyPool(
+        password,
+        username,
+        stratumPort, //Number
+        stratumHost,
+        miningAlgorithm = 'SCRYPT',
+        poolVerificationServiceLocation = 'USA'
+    )
+// Orders
+.getOrders(
+        algorithm,
+        status = '',
+        active = '',
+        market = 'EU', //String | Number 1 = EU, 2 = USA
+        ts,
+        op,
+        maxResults
+    )
+.createOrder(
+        type = 'STANDARD',
+        limit, //String | Number
+        poolId,
+        price, //String | Number
+        marketFactor, //(Big decimal scaled to 8 decimal points ) String
+        displayMarketFactor,
+        amount, //Pay amount in BTC;
+        market, //1 for Europe (NiceHash), 2 for USA (WestHash)
+        algorithm = 'SCRYPT' //String | Number
+    )
+.refillOrder(orderId, amount)
+.updatePriceandLimit(
+        orderId,
+        limit,
+        price,
+        marketFactor = '1000000000000',
+        displayMarketFactor = 'TH'
+    )
+.cancelOrder(orderId)
+
+// Withdrawl
+.createWithdrawlAddress(
+        type,
+        address,
+        name,
+        currency
+    )
+.createWithdrawlRequest(withdrawalAddressId, amount, currency)
+.getWithdrawalAddresses(currency, size = 100, page = 0)
+
+// Deposit Address
+.getDepositAddresses(currency)
+
+
+</code></pre>
     </article>
   </section>
 

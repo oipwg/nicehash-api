@@ -1,4 +1,3 @@
-require = require('esm')(module /*, options*/)
+import NiceHash from './NiceHash'
 
-// examples
-require('./testMethods')
+export default NiceHash
