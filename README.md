@@ -41,6 +41,7 @@ let NiceHash = new NiceHash(config)
 
 ```javascript
 export default {
+    //two different keys for production and testing. 
     apiHost: 'https://api2.nicehash.com', //use https://api-test.nicehash.com for development
     apiKey: '',
     //get it here: https://test.nicehash.com/my/settings/keys

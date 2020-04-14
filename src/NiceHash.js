@@ -3,9 +3,13 @@ import request from 'request-promise-native'
 import qs from 'qs'
 import algorithms from './algorithms'
 
-var log = function() {
+
+var log = function () {
     return console.log(...arguments)
 }
+
+// Fixed this for you, but you reall dont' need it. 
+const convertIDtoAlgo = algo => algo.toUpperCase();
 
 function createNonce() {
     var s = '',
@@ -19,16 +23,8 @@ function createNonce() {
     return s
 }
 
-const getAuthHeader = (
-    apiKey,
-    apiSecret,
-    time,
-    nonce,
-    organizationId = '',
-    request = {}
-) => {
+const getAuthHeader = (apiKey, apiSecret, time, nonce, organizationId = '', request = {}) => {
     const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
-
     hmac.update(apiKey)
     hmac.update('\0')
     hmac.update(time)
@@ -61,28 +57,28 @@ const getAuthHeader = (
     return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex)
 }
 
-class NicehHash {
-    constructor({ locale, apiHost, apiKey, apiSecret, orgId }) {
+class NiceHash {
+    constructor(settings = {}) {
+        let { locale, api_key, api_secret, api_id } = settings
         this.locale = locale || 'en'
-        this.host = apiHost
-        this.key = apiKey
-        this.secret = apiSecret
-        this.org = orgId
+        this.host = 'https://api2.nicehash.com';
+        this.key = api_key
+        this.secret = api_secret
+        this.org = api_id
         this.localTimeDiff = null
     }
 
-    getTime() {
-        return request({
+    async getTime() {
+        const res = await request({
             uri: this.host + '/api/v2/time',
             json: true,
-        }).then(res => {
-            this.localTimeDiff = res.serverTime - +new Date()
-            this.time = res.serverTime
-            return res
         })
+        this.localTimeDiff = res.serverTime - +new Date()
+        this.time = res.serverTime
+        return res
     }
 
-    apiCall(method, path, { query, body, time } = {}) {
+    async apiCall(method, path, { query, body, time } = {}) {
         if (this.localTimeDiff === null) {
             return Promise.reject(new Error('Get server time first .getTime()'))
         }
@@ -98,7 +94,7 @@ class NicehHash {
             method: method,
             headers: {
                 'X-Request-Id': nonce,
-                'X-User-Agent': 'NHNodeClient',
+                'X-User-Agent': 'Trinity',
                 'X-Time': timestamp,
                 'X-Nonce': nonce,
                 'X-User-Lang': this.locale,
@@ -122,7 +118,7 @@ class NicehHash {
             json: true,
         }
 
-        return request(options)
+        return await request(options)
     }
 
     get(path, options) {
@@ -143,18 +139,17 @@ class NicehHash {
 
     /* ----------------------- TEST-------------------------------------- */
 
-    testAuthorization() {
-        if (!!this.key && !!this.org && !!this.secret) {
-            this.getTime()
-                .then(res => {
-                    log('good to go 200', res)
-                    return true
-                })
-                .catch(err => {
-                    throw new Error(`Something went wrong... ${err}`)
-                })
+    async testAuthorization() {
+        if (this.key && this.org && this.secret) {
+            try {
+                let res = await this.getTime()
+                log('Good to go 200', res)
+                return !!res
+            } catch (e) {
+                throw new Error(`Test Authorization request failed: ${err}`)
+            }
         } else {
-            log('check config file')
+            log('Check credentials')
             return false
         }
     }
@@ -182,22 +177,21 @@ class NicehHash {
      * @async
      * @return {Promise<Array.<Object>>}
      */
+
     async getCurrentGlobalStats24h() {
-        this.getTime()
-            .then(() => this.get('/main/api/v2/public/stats/global/24h'))
-            .then(res => {
-                if (res.algos) {
-                    for (let stat of res.algos) {
-                        stat.algo = algorithms[stat.a]
-                    }
-                    return res.algos
+        try {
+            let time = await this.getTime()
+            let res = await this.get('/main/api/v2/public/stats/global/24h');
+            if (res.algos) {
+                for (let stat of res.algos) {
+                    stat.algo = algorithms[stat.a]
                 }
-            })
-            .catch(err => {
-                throw new Error(
-                    `Failed to get current global stats 24h: ${err}`
-                )
-            })
+                return res.algos;
+            } else
+                return { err: "Failed to get current global stats 24h: " }
+        } catch (e) {
+            return { err: "Failed to get current global stats 24h: ".concat(e) }
+        }
     }
 
     /**
@@ -235,7 +229,7 @@ class NicehHash {
 
     /**
      * Get information about Simple Multi-Algorithm Mining
-     * @async
+     * 
      * {
         miningAlgorithms:[List of mining algorithms ...
             {
@@ -284,15 +278,17 @@ class NicehHash {
         let query = {
             currency: currency.toUpperCase(),
         }
-
-        this.getTime()
-            .then(() => this.get('/main/api/v2/accounting/accounts', { query }))
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to get balance: ${err}`)
-            })
+        try {
+            let time = await this.getTime()
+            let balances = await this.get('/main/api/v2/accounting/accounts', { query })
+            for (let obj of balances) {
+                if (obj.balance > 0) {
+                    return obj;
+                }
+            }
+        } catch (e) {
+            return { err: "Failed to get balance: ".concat(e) }
+        }
     }
 
     async getExchangeSetting() {
@@ -345,34 +341,28 @@ class NicehHash {
     // creates pool - config for user
     // username is equvilent to flo addy - workername
     //! potential bug - check for typeof algo
-    async createOrEditPool(
-        id = '',
-        algorithm = 0,
-        name,
-        username,
-        password = 'x',
-        stratumHostname,
-        stratumPort
-    ) {
-        this.getTime()
-            .then(() => {
-                let body = {
-                    algorithm: convertIDtoAlgo(algorithm),
-                    name,
-                    username,
-                    password,
-                    stratumHostname,
-                    stratumPort,
-                    id, //Pool id (Required only if editing pool data)
-                }
-                return this.post('/main/api/v2/pool', { body })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to create or edit pool: ${err}`)
-            })
+    async createOrEditPool(options) {
+        let getTime = await this.getTime()
+        let body = {
+            algorithm: options.type.toUpperCase(),
+            name: options.name,
+            username: options.user,
+            password: options.pass,
+            stratumHostname: options.host,
+            stratumPort: options.port,
+            id: options.id || '', //Pool id (Required only if editing pool data)
+        }
+        try {
+            let response = await this.post('/main/api/v2/pool', {
+                body
+            });
+            response.success = true
+            return response;
+        } catch (e) {
+            return {
+                error: e.error
+            };
+        }
     }
 
     async getPoolInfo(poolId) {
@@ -408,16 +398,15 @@ class NicehHash {
             page,
         }
 
-        this.getTime()
-            .then(() => {
-                return this.get(`/main/api/v2/pools/`, { query })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to get pools: ${err}`)
-            })
+        let getTime = await this.getTime()
+        try {
+            let pools = this.get("/main/api/v2/pools/", { query });
+            return pools;
+        } catch (err) {
+            console.log('err: Catch satement NiceHash.js in src folder line 406', err.error)
+            err.message = 'Couldn\'t reach Nicehash\'s api'
+            return err;
+        }
     }
 
     async verifyPool(
@@ -501,66 +490,47 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     /**
      * Create new order. Only standard orders can be created with use of API.
      * @param {string} type - Hash power order type
-     * @param {string|number} [limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
-     * @param {string} poolId - Pool id
-     * @param {string|number} [price=] - Price in BTC/GH/day or BTC/TH/day;
-     * @param {string} marketFactor - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
-     * @param {string} displayMarketFactor - Used display market factor
-     * @param {string|} amount=0.005  - Pay amount in BTC;
-     * @param {string} algorithm - - Algorithm name or ID
-     * @param {number} market - 1 for Europe (NiceHash), 2 for USA (WestHash)
-     * @param {string|number} [code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
+     * @param {string|number} limit - Speed limit in GH/s or TH/s (0 for no limit)
+     * @param {string}  poolId - Pool id
+     * @param {string|number}  - Price in BTC/GH/day or BTC/TH/day;
+     * @param {string} - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
+     * @param {string}  - Used display market factor
+     * @param {string}   0.005  - Pay amount in BTC;
+     * @param {string} - Algorithm name or ID
+     * @param {number} - 1 for Europe (NiceHash), 2 for USA (WestHash)
+     * @param {string|number}  - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
      * @async
-     * @returns {Promise<Object> created order}
-     * 
-     * 
-amount:string (Big decimal scaled to 8 decimal points)Amount in BTC ...
-algorithm:SCRYPT | SHA256 | SCRYPTNF | X11 | X13 | KECCAK | X15 | NIST5 | NEOSCRYPT | LYRA2RE | WHIRLPOOLX | QUBIT | QUARK | AXIOM | LYRA2REV2 | SCRYPTJANENF16 | BLAKE256R8 | BLAKE256R14 | BLAKE256R8VNL | HODL | DAGGERHASHIMOTO | DECRED | CRYPTONIGHT | LBRY | EQUIHASH | PASCAL | X11GOST | SIA | BLAKE2S | SKUNK | CRYPTONIGHTV7 | CRYPTONIGHTHEAVY | LYRA2Z | X16R | CRYPTONIGHTV8 | SHA256ASICBOOST | ZHASH | BEAM | GRINCUCKAROO29 | GRINCUCKATOO31 | LYRA2REV3 | CRYPTONIGHTR | CUCKOOCYCLE | GRINCUCKAROOD29 | BEAMV2 | X16RV2 | RANDOMXMONERO | EAGLESONG | CUCKAROOM | GRINCUCKATOO32Algorithm ...
-market:EU | USAMarket ...
-}
+     * @return {Promise<Object>} create order 
      */
 
-    async createOrder(
-        type = 'STANDARD',
-        limit,
-        poolId,
-        price,
-        marketFactor,
-        displayMarketFactor,
-        amount,
-        market,
-        algorithm = 'SCRYPT'
-    ) {
-        if (typeof algo === 'number') {
-            algo = convertIDtoAlgo(algo)
-        }
+    async createOrder(options) {
+   
 
         if (typeof market === 'number') {
             market = convertLocation(market)
         }
 
-        this.getTime()
-            .then(() => {
-                var body = {
-                    type: type.toUpperCase(),
-                    limit,
-                    poolId,
-                    price,
-                    marketFactor,
-                    displayMarketFactor,
-                    amount,
-                    market: market,
-                    algorithm: algorithm.toUpperCase(),
-                }
-
-                return this.post('/main/api/v2/hashpower/order', { body })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to create order: ${err}`)
-            })
+        const body = {
+            type: 'STANDARD', //STANDARD | FIXED
+            // limit: options.limit,
+            limit: options.limit,
+            poolId: options.id,
+            price: options.price,
+            marketFactor: '1000000000000',
+            displayMarketFactor: 'TH',
+            amount: options.amount,
+            market: 'USA',
+            algorithm: options.algorithm.toUpperCase()
+        };
+      
+        try {
+            const time = await this.getTime()
+            const res = await this.post('/main/api/v2/hashpower/order', { body });
+            return res
+        } catch(err) {
+            console.log("Failed to create order: ".concat(err))
+            return {error: `Failed to create order: ${err}`}
+        }
     }
 
     /**
@@ -732,41 +702,5 @@ market:EU | USAMarket ...
             })
     }
 }
-//-----------------------------Helper Functions------------------------------------
-const checkAlgo = algoName => {
-    if (typeof algoName === 'string') {
-        return convertAlgoToID(algoName)
-    }
-    return algoName
-}
 
-const convertIDtoAlgo = algo => {
-    if (typeof algo === 'number') {
-        return algorithms[algo].toUpperCase()
-    }
-}
-
-const convertAlgoToID = algo => {
-    if (typeof algo === 'string') {
-        for (let id in algorithms) {
-            if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
-                return id
-            }
-        }
-    } else if (typeof algo === 'number') {
-        if (algorithms[algo]) return algorithms.algo
-    } else return algo
-}
-
-const convertLocation = location => {
-    switch (location) {
-        case 1:
-            return 'EU'
-        case 2:
-            return 'USA'
-        default:
-            return ''
-    }
-}
-
-export default NicehHash
+export default NiceHash

@@ -1,6 +1,6 @@
 {
     "name": "nicehash-api",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "javascript wrapper for nicehash api",
     "main": "lib/index.js",
     "scripts": {
@@ -17,10 +17,15 @@
     },
     "license": "ISC",
     "dependencies": {
-        "core-js": "^2.6.11",
+        "core-js": "^3.6.5",
+        "crypto-js": "^3.1.9-1",
         "dotenv": "^6.0.0",
+        "esm": "^3.2.25",
         "lodash": "^4.17.15",
-        "nicehash-api": "^1.1.4"
+        "qs": "^6.7.0",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "request-promise-native": "^1.0.7"
     },
     "devDependencies": {
         "@babel/cli": "^7.1.0",
@@ -30,13 +35,7 @@
         "babel-jest": "^25.1.0",
         "jest": "^25.1.0",
         "jsdoc": "^3.6.3",
-        "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git",
-        "crypto-js": "^3.1.9-1",
-        "esm": "^3.2.25",
-        "qs": "^6.7.0",
-        "request": "^2.88.0",
-        "request-promise": "^4.2.4",
-        "request-promise-native": "^1.0.7"
+        "jsdoc-template": "git+https://github.com/oipwg/jsdoc-template.git"
     },
     "jest": {
         "testEnvironment": "node"
