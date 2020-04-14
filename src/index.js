@@ -1,3 +1,3 @@
-import NiceHash from './NiceHash';
+import NiceHash from './NiceHash'
 
 export default NiceHash
