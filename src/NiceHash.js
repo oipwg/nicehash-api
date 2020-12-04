@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js'
-import RequestPromiseNative from 'request-promise-native'
+import request from 'request-promise-native'
 import qs from 'qs'
 import algorithms from './algorithms'
 
@@ -8,7 +8,7 @@ var log = function log() {
 }; // Fixed this for you, but you reall dont' need it. 
 
 
-const convertIDtoAlgo = algo => algo.toUpperCase();
+//const convertIDtoAlgo = algo => algo.toUpperCase();
 
 function createNonce() {
   var s = '',
@@ -22,178 +22,177 @@ function createNonce() {
   return s;
 }
 
-const getAuthHeader = function getAuthHeader(apiKey, apiSecret, time, nonce) {
-  let organizationId = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
-  let request = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
-
-  const hmac = CryptoJS.default.algo.HMAC.create(CryptoJS.default.algo.SHA256, apiSecret);
-
-  hmac.update(apiKey);
-  hmac.update('\0');
-  hmac.update(time);
-  hmac.update('\0');
-  hmac.update(nonce);
-  hmac.update('\0');
-  hmac.update('\0');
-  if (organizationId) hmac.update(organizationId);
-  hmac.update('\0');
-  hmac.update('\0');
-  hmac.update(request.method);
-  hmac.update('\0');
-  hmac.update(request.path);
-  hmac.update('\0');
-  if (request.query) hmac.update(typeof request.query == 'object' ? qs.default.stringify(request.query) : request.query);
-
+const getAuthHeader = (apiKey, apiSecret, time, nonce, organizationId = '', request = {}) => {
+  const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
+  hmac.update(apiKey)
+  hmac.update('\0')
+  hmac.update(time)
+  hmac.update('\0')
+  hmac.update(nonce)
+  hmac.update('\0')
+  hmac.update('\0')
+  if (organizationId) hmac.update(organizationId)
+  hmac.update('\0')
+  hmac.update('\0')
+  hmac.update(request.method)
+  hmac.update('\0')
+  hmac.update(request.path)
+  hmac.update('\0')
+  if (request.query)
+      hmac.update(
+          typeof request.query == 'object'
+              ? qs.stringify(request.query)
+              : request.query
+      )
   if (request.body) {
-    hmac.update('\0');
-    hmac.update(typeof request.body == 'object' ? JSON.stringify(request.body) : request.body);
+      hmac.update('\0')
+      hmac.update(
+          typeof request.body == 'object'
+              ? JSON.stringify(request.body)
+              : request.body
+      )
   }
 
-  return apiKey + ':' + hmac.finalize().toString(CryptoJS.default.enc.Hex);
-};
+  return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex)
+}
 
 class NiceHash {
-  constructor() {
-    let settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    let {
-      locale,
-      api_key,
-      api_secret,
-      api_id
-    } = settings;
-    this.locale = locale || 'en';
-    this.host = 'https://api2.nicehash.com';
-    this.key = api_key;
-    this.secret = api_secret;
-    this.org = api_id;
-    this.localTimeDiff = null;
+  constructor(settings = {}) {
+      let { locale, api_key, api_secret, api_id } = settings
+      this.locale = locale || 'en'
+      this.host = 'https://api2.nicehash.com';
+      this.key = api_key
+      this.secret = api_secret
+      this.org = api_id
+      this.localTimeDiff = null
   }
 
   async getTime() {
-    const res = await (0, RequestPromiseNative.default)({
-      uri: this.host + '/api/v2/time',
-      json: true
-    });
-    this.localTimeDiff = res.serverTime - +new Date();
-    this.time = res.serverTime;
-    return res;
+      const res = await request({
+          uri: this.host + '/api/v2/time',
+          json: true,
+      })
+      this.localTimeDiff = res.serverTime - +new Date()
+      this.time = res.serverTime
+      return res
   }
 
-  async apiCall(method, path) {
-    let {
-      query,
-      body,
-      time
-    } = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  async apiCall(method, path, { query, body, time } = {}) {
+      if (this.localTimeDiff === null) {
+          return Promise.reject(new Error('Get server time first .getTime()'))
+      }
 
-    if (this.localTimeDiff === null) {
-      return Promise.reject(new Error('Get server time first .getTime()'));
-    } // query in path
+      // query in path
+      var [pathOnly, pathQuery] = path.split('?')
+      if (pathQuery) query = { ...qs.parse(pathQuery), ...query }
 
+      const nonce = createNonce();
+      const timestamp = (time || +new Date() + this.localTimeDiff).toString()
+      const options = {
+          uri: this.host + pathOnly,
+          method: method,
+          headers: {
+              'X-Request-Id': nonce,
+              'X-User-Agent': 'Trinity',
+              'X-Time': timestamp,
+              'X-Nonce': nonce,
+              'X-User-Lang': this.locale,
+              'X-Organization-Id': this.org,
+              'X-Auth': getAuthHeader(
+                  this.key,
+                  this.secret,
+                  timestamp,
+                  nonce,
+                  this.org,
+                  {
+                      method,
+                      path: pathOnly,
+                      query,
+                      body,
+                  }
+              ),
+          },
+          qs: query,
+          body,
+          json: true,
+      }
 
-    var [pathOnly, pathQuery] = path.split('?');
-    if (pathQuery) query = _objectSpread({}, qs.default.parse(pathQuery), {}, query);
-    const nonce = createNonce();
-    const timestamp = (time || +new Date() + this.localTimeDiff).toString();
-    const options = {
-      uri: this.host + pathOnly,
-      method: method,
-      headers: {
-        'X-Request-Id': nonce,
-        'X-User-Agent': 'Trinity',
-        'X-Time': timestamp,
-        'X-Nonce': nonce,
-        'X-User-Lang': this.locale,
-        'X-Organization-Id': this.org,
-        'X-Auth': getAuthHeader(this.key, this.secret, timestamp, nonce, this.org, {
-          method,
-          path: pathOnly,
-          query,
-          body
-        })
-      },
-      qs: query,
-      body,
-      json: true
-    };
-    return await (0, RequestPromiseNative.default)(options);
+      return await request(options)
   }
 
   get(path, options) {
-    return this.apiCall('GET', path, options);
+      return this.apiCall('GET', path, options)
   }
 
   post(path, options) {
-    return this.apiCall('POST', path, options);
+      return this.apiCall('POST', path, options)
   }
 
   put(path, options) {
-    return this.apiCall('PUT', path, options);
+      return this.apiCall('PUT', path, options)
   }
 
   delete(path, options) {
-    return this.apiCall('DELETE', path, options);
+      return this.apiCall('DELETE', path, options)
   }
+
   /* ----------------------- TEST-------------------------------------- */
 
-
   async testAuthorization() {
-    if (this.key && this.org && this.secret) {
-      try {
-        let res = await this.getTime();
-        log('Good to go 200', res);
-        return !!res;
-      } catch (e) {
-        throw new Error("Test Authorization request failed: ".concat(err));
+      if (this.key && this.org && this.secret) {
+          try {
+              let res = await this.getTime()
+              log('Good to go 200', res)
+              return !!res
+          } catch (e) {
+              throw new Error(`Test Authorization request failed: ${err}`)
+          }
+      } else {
+          log('Check credentials')
+          return false
       }
-    } else {
-      log('Check credentials');
-      return false;
-    }
   }
+
   /* ----------------------- PUBLIC API -------------------------------------- */
 
-
   async getCurrentGlobalStats() {
-    this.getTime().then(() => this.get('/main/api/v2/public/stats/global/current')).then(res => {
-      if (res.algos) {
-        for (let stat of res.algos) {
-          stat.algo = algorithms.default[stat.a];
-        }
-
-        return res.algos;
-      }
-    }).catch(err => {
-      throw new Error("Failed to get current global stats: ".concat(err));
-    });
+      this.getTime()
+          .then(() => this.get('/main/api/v2/public/stats/global/current'))
+          .then(res => {
+              if (res.algos) {
+                  for (let stat of res.algos) {
+                      stat.algo = algorithms[stat.a]
+                  }
+                  return res.algos
+              }
+          })
+          .catch(err => {
+              throw new Error(`Failed to get current global stats: ${err}`)
+          })
   }
+
   /**
    * Get average profitability (price) and hashing speed for all algorithms in past 24 hours.
    * @async
    * @return {Promise<Array.<Object>>}
    */
 
-
   async getCurrentGlobalStats24h() {
-    try {
-      let time = await this.getTime();
-      let res = await this.get('/main/api/v2/public/stats/global/24h');
-
-      if (res.algos) {
-        for (let stat of res.algos) {
-          stat.algo = algorithms.default[stat.a];
-        }
-
-        return res.algos;
-      } else return {
-        err: "Failed to get current global stats 24h: "
-      };
-    } catch (e) {
-      return {
-        err: "Failed to get current global stats 24h: ".concat(e)
-      };
-    }
+      try {
+          let time = await this.getTime()
+          let res = await this.get('/main/api/v2/public/stats/global/24h');
+          if (res.algos) {
+              for (let stat of res.algos) {
+                  stat.algo = algorithms[stat.a]
+              }
+              return res.algos;
+          } else
+              return { err: "Failed to get current global stats 24h: " }
+      } catch (e) {
+          return { err: "Failed to get current global stats 24h: ".concat(e) }
+      }
   }
+
   /**
    * Get all orders for certain algorithm. Refreshed every 30 seconds.
    * @param {number} location - 1 for Europe (NiceHash), 2 for USA (WestHash);
@@ -201,32 +200,32 @@ class NiceHash {
    * @async
    * @return {Promise<Array.<Object>>}
    */
+  async getOrdersForAlgorithm(market = 0, algo = 0) {
+      if (typeof algo === 'number') {
+          algo = convertIDtoAlgo(algo)
+      }
 
+      if (typeof market === 'number') {
+          market = convertLocation(market)
+      }
 
-  async getOrdersForAlgorithm() {
-    let market = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    let algo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      let query = {
+          market: market,
+          algorithm: algo,
+      }
 
-    // if (typeof algo === 'number') {
-    //   algo = convertIDtoAlgo(algo);
-    // }
-
-    // if (typeof market === 'number') {
-    //   market = convertLocation(market);
-    // }
-
-    let query = {
-      market: market,
-      algorithm: algo
-    };
-    this.getTime().then(() => this.get('/main/api/v2/public/orders/', {
-      query
-    })).then(res => {
-      return res.list;
-    }).catch(err => {
-      throw new Error("Failed to get all orders for alogrithm: ".concat(err));
-    });
+      this.getTime()
+          .then(() => this.get('/main/api/v2/public/orders/', { query }))
+          .then(res => {
+              return res.list
+          })
+          .catch(err => {
+              throw new Error(
+                  `Failed to get all orders for alogrithm: ${err}`
+              )
+          })
   }
+
   /**
    * Get information about Simple Multi-Algorithm Mining
    * 
@@ -241,26 +240,31 @@ class NiceHash {
       ]
   }       
    */
-
-
   async getSingleMultiAlgoInfo() {
-    this.getTime().then(() => this.get('/main/api/v2/public/simplemultialgo/info/')).then(res => {
-      return res.miningAlgorithms;
-    }).catch(err => {
-      throw new Error("Failed to get single multi algo info ".concat(err));
-    });
+      this.getTime()
+          .then(() => this.get('/main/api/v2/public/simplemultialgo/info/'))
+          .then(res => {
+              return res.miningAlgorithms
+          })
+          .catch(err => {
+              throw new Error(`Failed to get single multi algo info ${err}`)
+          })
   }
 
   async getBuyInfo() {
-    this.getTime().then(() => this.get('/main/api/v2/public/buy/info/')).then(res => {
-      return res.miningAlgorithms;
-    }).catch(err => {
-      throw new Error("Failed to get buy info: ".concat(err));
-    });
+      this.getTime()
+          .then(() => this.get('/main/api/v2/public/buy/info/'))
+          .then(res => {
+              return res.miningAlgorithms
+          })
+          .catch(err => {
+              throw new Error(`Failed to get buy info: ${err}`)
+          })
   }
-  /* ----------------------- PRIVATE API -------------------------------------- */
-  //getBalance
 
+  /* ----------------------- PRIVATE API -------------------------------------- */
+
+  //getBalance
   /**
    *
    * @param {string} currency - BTC | ETH | XRP | BCH | LTC | ZEC | DASH | XLM | EOS
@@ -269,366 +273,250 @@ class NiceHash {
    *                              | TDASH | TXLM | TEOS | TERC | TBSV | TEURKM
    */
   // returns list of currency and balance;
-
-
-  async getBalance() {
-    let currency = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'BTC';
-
-    try {
-      let time = await this.getTime();
-      let balances = await this.get('/main/api/v2/accounting/account2/' + currency);
-      let {
-        totalBalance,
-        available,
-        pending,
-        btcRate
-      } = balances;
-      return totalBalance;
-    } catch (e) {
-      return {
-        err: "Failed to get balance: ".concat(e)
-      };
+  async getBalance(currency = 'BTC') {
+      try {
+        let time = await this.getTime();
+        let balances = await this.get('/main/api/v2/accounting/account2/'+currency);
+        let {totalBalance, available, pending, btcRate} = balances;
+        return totalBalance
+      } catch (e) {
+        return {
+          err: "Failed to get balance: ".concat(e)
+        };
+      }
     }
-  }
 
   async getExchangeSetting() {
-    this.getTime().then(() => this.get('/exchange/api/v2/info/status')).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to get exchange setting: ".concat(err));
-    });
-  } // not allowed in the U.S.
-
-
-  async getOrderBook(algo) {
-    let query = {
-      algorithm: algo.toUpperCase()
-    };
-
-    try {
-      let time = await this.getTime();
-      let res = await this.get('/main/api/v2/hashpower/orderBook/', {
-        query
-      });
-      return res;
-    } catch (err) {
-      throw new Error("Failed to get exchange order book: ".concat(err));
-    }
+      this.getTime()
+          .then(() => this.get('/exchange/api/v2/info/status'))
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to get exchange setting: ${err}`)
+          })
   }
 
+  // not allowed in the U.S.
+  async getOrderBook(algo) {
+      let query = {
+        algorithm: algo
+        // algorithm: algo.toUpperCase()
+      };
+      try {
+        let time = await this.getTime();
+        let res = await this.get('/main/api/v2/hashpower/orderBook/', {
+          query
+        })
+        return res
+      } catch ( err ) {
+        throw new Error("Failed to get exchange order book: ".concat(err));
+      }
+    }
+
   async getAlgoSetting() {
-    this.getTime().then(() => this.get('/main/api/v2/mining/algorithms')).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to get algorithm setting: ".concat(err));
-    });
-  } //----------------------THEM POOLS----------------------------
+      this.getTime()
+          .then(() => this.get('/main/api/v2/mining/algorithms'))
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to get algorithm setting: ${err}`)
+          })
+  }
+
+  //----------------------THEM POOLS----------------------------
   //! enable buying - api or on website
   //   CREATE OR EDIT POOL
   // Create or edit pool info
   // Required permissions:
+
   // Marketplace / Manage pools (MAPO)
   // creates pool - config for user
   // username is equvilent to flo addy - workername
   //! potential bug - check for typeof algo
-
-
   async createOrEditPool(options) {
-    let type = options.type || options.algo;
-    let getTime = await this.getTime();
-    let body = {
-      algorithm: type.toUpperCase(),
-      name: options.name,
-      username: options.user,
-      password: options.pass,
-      stratumHostname: options.host,
-      stratumPort: options.port,
-      id: options.id || '' //Pool id (Required only if editing pool data)
-
-    };
-
-    try {
-      let response = await this.post('/main/api/v2/pool', {
-        body
-      });
-      response.success = true;
-      return response;
-    } catch (e) {
-      return {
-        error: e.error
-      };
-    }
+      let type = options.type || options.algo
+      let getTime = await this.getTime()
+      let body = {
+          algorithm: type.toUpperCase(),
+          name: options.name,
+          username: options.user,
+          password: options.pass,
+          stratumHostname: options.host,
+          stratumPort: options.port,
+          id: options.id || '', //Pool id (Required only if editing pool data)
+      }
+      try {
+          let response = await this.post('/main/api/v2/pool', {
+              body
+          });
+          response.success = true
+          return response;
+      } catch (e) {
+          return {
+              error: e.error
+          };
+      }
   }
 
   async getPoolInfo(poolId) {
-    this.getTime().then(() => {
-      return this.get("/main/api/v2/pool/".concat(poolId));
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to get pool info: ".concat(err));
-    });
-  } // delete pool - pass poolId
+      this.getTime()
+          .then(() => {
+              return this.get(`/main/api/v2/pool/${poolId}`)
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to get pool info: ${err}`)
+          })
+  }
 
-
+  // delete pool - pass poolId
   async deletePool(poolId) {
-    this.getTime().then(() => {
-      return this.delete("/main/api/v2/pool/".concat(poolId));
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to delete pool: ".concat(err));
-    });
+      this.getTime()
+          .then(() => {
+              return this.delete(`/main/api/v2/pool/${poolId}`)
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to delete pool: ${err}`)
+          })
   }
 
-  async getPools() {
-    let size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
-    let page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    let query = {
-      size,
-      page
-    };
-    let getTime = await this.getTime();
+  async getPools(size = 100, page = 0) {
+      let query = {
+          size,
+          page,
+      }
 
-    try {
-      let pools = this.get("/main/api/v2/pools/", {
-        query
-      });
-      return pools;
-    } catch (err) {
-      console.log('err: Catch satement NiceHash.js in src folder line 406', err.error);
-      err.message = 'Couldn\'t reach Nicehash\'s api';
-      return err;
-    }
+      let getTime = await this.getTime()
+      try {
+          let pools = this.get("/main/api/v2/pools/", { query });
+          return pools;
+      } catch (err) {
+          console.log('err: Catch satement NiceHash.js in src folder line 406', err.error)
+          err.message = 'Couldn\'t reach Nicehash\'s api'
+          return err;
+      }
   }
 
-  async verifyPool(password, username, stratumPort, stratumHost) {
-    let miningAlgorithm = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'SCRYPT';
-    let poolVerificationServiceLocation = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'USA';
-    let body = {
+  async verifyPool(
       password,
       username,
       stratumPort,
-      //number
       stratumHost,
-      miningAlgorithm: miningAlgorithm.toUpperCase(),
-      poolVerificationServiceLocation: poolVerificationServiceLocation.toUpperCase() //EUROPE | USA
+      miningAlgorithm = 'SCRYPT',
+      poolVerificationServiceLocation = 'USA'
+  ) {
+      let body = {
+          password,
+          username,
+          stratumPort, //number
+          stratumHost,
+          miningAlgorithm: miningAlgorithm.toUpperCase(),
+          poolVerificationServiceLocation: poolVerificationServiceLocation.toUpperCase(), //EUROPE | USA
+      }
 
-    };
-    this.getTime().then(() => {
-      return this.post("/main/api/v2/pools/verify/", {
-        body
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to verify pool: ".concat(err));
-    });
-  } //---------------------- HASHPOWER ORDERS ----------------------------
+      this.getTime()
+          .then(() => {
+              return this.post(`/main/api/v2/pools/verify/`, { body })
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to verify pool: ${err}`)
+          })
+  }
+
+  //---------------------- HASHPOWER ORDERS ----------------------------
 
   /*
-  CREATE ORDER
-  Create order
-  Headers: X-Request-Id: (required, unique identifier of specific request, client should have local awareness that some app action should be done only once on server, if for some reason request is processed by server and client does not know anything about it (request failed). This ID will provide server information that it will not repeat action if it was already processed)
-  Required permissions:
-  Marketplace / Place, refill and cancel hashpower orders (PRCO)
-  */
+CREATE ORDER
+Create order
+Headers: X-Request-Id: (required, unique identifier of specific request, client should have local awareness that some app action should be done only once on server, if for some reason request is processed by server and client does not know anything about it (request failed). This ID will provide server information that it will not repeat action if it was already processed)
 
-// try {
-//       let time = await this.getTime();
-//       let balances = await this.get('/main/api/v2/accounting/account2/' + currency);
-//       let {
-//         totalBalance,
-//         available,
-//         pending,
-//         btcRate
-//       } = balances;
-//       return totalBalance;
-//     } catch (e) {
-//       return {
-//         err: "Failed to get balance: ".concat(e)
-//       };
-//     }
+Required permissions:
+Marketplace / Place, refill and cancel hashpower orders (PRCO)
+*/
 
-  async getOrders(algo, mk) {
-    let status;
-    let active;
-    // let status = algo['status'] !== undefined ? algo['status'] : 'ALIVE';
-    // let active = algo['alive'] !== undefined ? algo['alive'] : true;
-    // let market = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'USA';
-    let ts = arguments.length > 4 ? arguments[4] : undefined;
-    let op = arguments.length > 5 ? arguments[5] : undefined;
-    let maxResults = arguments.length > 6 ? arguments[6] : undefined;
+  async getOrders(
+      algo,
+      mk
+  ) {
+      let status;
+      let active;
 
-    try {
-      let time = await this.getTime();
-      let query = {
-        algorithm: ['algo'],
-        status,
-        active,
-        market: ['mk'],
-        ts: ts || this.time,
-        op: op || 'LE',
-        limit: maxResults || 10
-      };
-      let myOrdersList = await this.get('/main/api/v2/hashpower/myOrders/', {
-        query
-      });
-      let myOrders = myOrdersList.list[0]
-      return (myOrders)
-    } catch (e) {
-      return {
-        err: "Failed to get orders: ".concat(e)
-      };
-    }
+      // let status = algo['status'] !== undefined ? algo['status'] : 'ALIVE';
+      // let active = algo['alive'] !== undefined ? algo['alive'] : true;
+      // let market = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'USA';
+      let ts = arguments.length > 4 ? arguments[4] : undefined;
+      let op = arguments.length > 5 ? arguments[5] : undefined;
+      let maxResults = arguments.length > 6 ? arguments[6] : undefined;
+
+      try {
+        let time = await this.getTime();
+        let query = {
+          algorithm: ['algo'],
+          status,
+          active,
+          market: ['mk'],
+          ts: ts || this.time,
+          op: op || 'LE',
+          limit: maxResults || 10
+        };
+        let myOrdersList = await this.get('/main/api/v2/hashpower/myOrders/', {
+          query
+        });
+        let myOrders = myOrdersList.list[0]
+        return (myOrders)
+      } catch (e) {
+        return {
+          err: "Failed to get orders: ".concat(e)
+        };
+      }
   }
-
-
-
-
-
-    // this.getTime().then(() => {
-    //   let query = {
-    //     algorithm: algo['algo'],
-    //     //optional
-    //     status,
-    //     //optional
-    //     active,
-    //     //optional - /*   Show only active or not active orders (optional, active orders: PENDING, ACTIVE, PENDING_CANCELLATION, not active orders: CANCELLED, EXPIRED, ERROR, COMPLETED, ...) */
-    //     market,
-    //     //optional
-    //     ts: ts || this.time,
-    //     //! right now;
-    //     op: op || 'LE',
-    //     //Less equal to.
-    //     limit: maxResults || 10
-    //   };
-    //   console.log("first return statement")
-
-    //   let response = this.get('/main/api/v2/hashpower/myOrders/', {
-    //     query
-    //   })
-    //   return response
-
-    // })
-
-  // }
-
-
-
-
-
-  // async getOrders(algo) {
-  //   // console.log("api call made for Orders!", algo)
-  //   //let status = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  //   let status = algo['status'] !== undefined ? algo['status'] : 'ALIVE';
-  //   //let active = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-  //   let active = algo['alive'] !== undefined ? algo['alive'] : true;
-  //   let market = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'USA';
-  //   let ts = arguments.length > 4 ? arguments[4] : undefined;
-  //   let op = arguments.length > 5 ? arguments[5] : undefined;
-  //   let maxResults = arguments.length > 6 ? arguments[6] : undefined;
-
-  //   // console.log("status:",status);
-  //   // console.log("active:", active);
-  //   // if (typeof algo === 'number') {
-  //   //   algo = convertIDtoAlgo(algo);
-  //   // }
-
-  //   // if (typeof market === 'number') {
-  //   //   market = convertLocation(market);
-  //   // }
-
-  //   this.getTime().then(() => {
-  //     let query = {
-  //       algorithm: algo['algo'],
-  //       //optional
-  //       status,
-  //       //optional
-  //       active,
-  //       //optional - /*   Show only active or not active orders (optional, active orders: PENDING, ACTIVE, PENDING_CANCELLATION, not active orders: CANCELLED, EXPIRED, ERROR, COMPLETED, ...) */
-  //       market,
-  //       //optional
-  //       ts: ts || this.time,
-  //       //! right now;
-  //       op: op || 'LE',
-  //       //Less equal to.
-  //       limit: maxResults || 10
-  //     };
-  //     console.log("first return statement")
-
-  //     let response = this.get('/main/api/v2/hashpower/myOrders/', {
-  //       query
-  //     })
-  //     return response
-  //     // return this.get('/main/api/v2/hashpower/myOrders/', {
-  //     //   query
-  //     // });
-  //   })
-  //   // .then(res => {
-  //     // console.log("returning: "+ Object.getOwnPropertyNames(res));
-  //     // for (let item in res['list']) {
-  //       // return (res.list[0]);
-  //       // console.log(
-  //         // res
-  //         // res.list[0]
-  //         // "all:", res['list'][item],
-  //         // "rentalId: ", res['list'][item].id,
-  //         // "availableAmount: ", res['list'][item].availableAmount,
-  //         // "payedAmount: ", res['list'][item].payedAmount,
-  //         // "startTs: ", res['list'][item].startTs,
-  //         // "endTs: ", res['list'][item].endTs,
-  //         // "updatedTs: ", res['list'][item].updatedTs,
-  //         // "estimateDurationInSeconds: ", res['list'][item].estimateDurationInSeconds,
-  //         // "price: ", res['list'][item].price,
-  //         // "limit: ", res['list'][item].limit,
-  //         // "displayMarketFactor: ", res['list'][item].displayMarketFactor,
-  //         // "amount: ", res['list'][item].amount,
-  //         // "worker:", res['list'][item].pool.username, 
-  //         // "pool:", res['list'][item].pool.name
-  //         // )
-  //     // return (res);
-  //     // };
-  //     // let myRentalOrders = res.list[0]
-  //     // return (res);
-  //   // }).catch(err => {
-  //     // throw new Error("Failed to create order: ".concat(err));
-  //   // });
-  // }
 
   async getDuration(settings) {
-    const body = {
-      marketFactor: '1000000000000',
-      displayMarketFactor: 'TH',
-      decreaseFee: true,
-      amount: settings.amount,
-      limit: settings.limit,
-      price: settings.price,
-      type: settings.type
-    };
-
-    try {
-      const time = await this.getTime();
-      const res = await this.post('/main/api/v2/hashpower/orders/calculateEstimateDuration/', {
-        body
-      });
-      return res;
-    } catch (err) {
-      throw new Error("Failed to get duration: ".concat(err));
-    }
+      const body = {
+          marketFactor: '1000000000000',
+          displayMarketFactor: 'TH',
+          decreaseFee: true,
+          amount: settings.amount,
+          limit: settings.limit,
+          price: settings.price,
+          type: settings.type
+      };
+  
+      try {
+          const time = await this.getTime();
+          const res = await this.post('/main/api/v2/hashpower/orders/calculateEstimateDuration/', {
+              body
+          })
+          return res
+      } catch (err) {
+          throw new Error("Failed to get duration: ".concat(err));
+      }
   }
-   /**
-   * Get price and other values for standard orders.
-   * @param {string} algo - Algorithm of the price needed
+
+  /**
+   * Get fixed price on FIXED orders.
+   * @param {Object} options - The Options for the rental operation
+   * @param {string} options.limit - Hash power 
+   * @param {string}  options.algorithm - Algorithm of chosing 
    * @async
-   * @return {Promise<Object>} object
+   * @return {Promise<Object>} create order 
    */
 
-
-  async getStandardPrice(algo, mkt) {
+  async getStandardPrice(algo) {
     const query = {
-      market: mkt,
-      algorithm: algo.toUpperCase()
+      // market: 'EU',
+      // algorithm: algo.toUpperCase()
+      algorithm: algo
     };
 
     try {
@@ -645,28 +533,18 @@ class NiceHash {
     }
   }
   
-  /**
-  * Get fixed price on FIXED orders.
-  * @param {Object} options - The Options for the rental operation
-  * @param {string} options.limit - Hash power 
-  * @param {string}  options.algorithm - Algorithm of chosing 
-  * @async
-  * @return {Promise<Object>} create order 
-  */
-
-
   async getFixedPrice(options) {
     const body = {
       limit: options.limit,
       market: 'USA',
       algorithm: options.algorithm.toUpperCase()
-    };
-
+    }
+  
     try {
       const time = await this.getTime();
       const res = await this.post('/main/api/v2/hashpower/orders/fixedPrice/', {
         body
-      });
+    });
       return res;
     } catch (err) {
       console.log("Failed to getFixed price: ".concat(err));
@@ -692,172 +570,197 @@ class NiceHash {
    * @return {Promise<Object>} create order 
    */
 
-
   async createOrder(options) {
-    // if (typeof market === 'number') {
-    //     market = convertLocation(market)
-    // }
-    const body = {
-      //STANDARD | FIXED
-      type: options.type,
-      limit: options.limit,
-      poolId: options.id,
-      price: options.price,
-      marketFactor: options.marketFactor,
-      displayMarketFactor: options.displayMarketFactor,
-      amount: options.amount,
-      market: 'USA',
-      algorithm: options.algorithm.toUpperCase()
-    };
-
-    try {
-      const time = await this.getTime();
-      return await this.post('/main/api/v2/hashpower/order', {
-        body
-      });
-    } catch (err) {
-      console.log("Failed to create order: ".concat(err));
-      return {
-        error: "Failed to create order: ".concat(err)
-      };
-    }
+      // if (typeof market === 'number') {
+      //     market = convertLocation(market)
+      // }
+      const body = {
+          //STANDARD | FIXED
+          type: options.type,
+          limit: options.limit,
+          poolId: options.id,
+          price: options.price,
+          marketFactor: options.marketFactor,
+          displayMarketFactor: options.displayMarketFactor,
+          amount: options.amount,
+          market: 'USA',
+          algorithm: options.algorithm.toUpperCase()
+        };
+    
+      try {
+          const time = await this.getTime()
+          return await this.post('/main/api/v2/hashpower/order', { body });
+      } catch(err) {
+          console.log("Failed to create order: ".concat(err))
+          return {error: `Failed to create order: ${err}`}
+      }
   }
+
   /**
    * @param {string} orderId - Order Id
    * @param {string|number} amount - amount in BTC
    */
-
-
   async refillOrder(orderId, amount) {
-    this.getTime().then(() => {
-      var body = {
-        amount
-      };
-      return this.post("/main/api/v2/hashpower/order/".concat(orderId, "/refill/"), {
-        body
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to refill order: ".concat(err));
-    });
+      this.getTime()
+          .then(() => {
+              var body = {
+                  amount,
+              }
+              return this.post(
+                  `/main/api/v2/hashpower/order/${orderId}/refill/`,
+                  { body }
+              )
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to refill order: ${err}`)
+          })
   }
 
-  async updatePriceandLimit(orderId, limit, price) {
-    let marketFactor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '1000000000000';
-    let displayMarketFactor = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'TH';
-    this.getTime().then(() => {
-      var body = {
-        marketFactor: marketFactor || '1000000000000',
-        displayMarketFactor: displayMarketFactor || 'TH',
-        limit,
-        price
-      };
-      return this.post("/main/api/v2/hashpower/order/".concat(orderId, "/updatePriceAndLimit/"), {
-        body
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to update price and limit ".concat(err));
-    });
+  async updatePriceandLimit(
+      orderId,
+      limit,
+      price,
+      marketFactor = '1000000000000',
+      displayMarketFactor = 'TH'
+  ) {
+      this.getTime()
+          .then(() => {
+              var body = {
+                  marketFactor: marketFactor || '1000000000000',
+                  displayMarketFactor: displayMarketFactor || 'TH',
+                  limit,
+                  price,
+              }
+              return this.post(
+                  `/main/api/v2/hashpower/order/${orderId}/updatePriceAndLimit/`,
+                  { body }
+              )
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to update price and limit ${err}`)
+          })
   }
 
   async cancelOrder(orderId) {
-    this.getTime().then(() => {
-      return this.delete("/main/api/v2/hashpower/order/".concat(orderId, "/"));
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Failed to cancel order: ".concat(err));
-    });
+      this.getTime()
+          .then(() => {
+              return this.delete(`/main/api/v2/hashpower/order/${orderId}/`)
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Failed to cancel order: ${err}`)
+          })
   }
 
   async setOrderPrice() {
-    log('not built');
+      log('not built')
   }
 
   async decreaseOrderPrice() {
-    log('not built');
+      log('not built')
   }
 
   async setOrderLimit() {
-    log('not built');
-  } //----------------------------- Withdrawl ------------------------------------
+      log('not built')
+  }
 
+  //----------------------------- Withdrawl ------------------------------------
 
-  async createWithdrawlAddress( // token, optional 2FA
-  type, address, name, currency) {
-    let body = {
-      type: type.toUpperCase(),
+  async createWithdrawlAddress(
+      // token, optional 2FA
+      type,
       address,
       name,
-      currency: currency.toUpperCase()
-    };
-    this.getTime().then(() => {
-      return this.post("/main/api/v2/accounting/withdrawalAddress/", {
-        body
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Fail create withdrawl address ".concat(err));
-    });
+      currency
+  ) {
+      let body = {
+          type: type.toUpperCase(),
+          address,
+          name,
+          currency: currency.toUpperCase(),
+      }
+
+      this.getTime()
+          .then(() => {
+              return this.post(`/main/api/v2/accounting/withdrawalAddress/`, {
+                  body,
+              })
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Fail create withdrawl address ${err}`)
+          })
   }
 
   async createWithdrawlRequest(withdrawalAddressId, amount, currency) {
-    let body = {
-      withdrawalAddressId,
-      amount,
-      currency: currency.toUpperCase()
-    };
-    this.getTime().then(() => {
-      return this.post("/main/api/v2/accounting/withdrawal/", {
-        body
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Fail create withdrawl address ".concat(err));
-    });
+      let body = {
+          withdrawalAddressId,
+          amount,
+          currency: currency.toUpperCase(),
+      }
+
+      this.getTime()
+          .then(() => {
+              return this.post(`/main/api/v2/accounting/withdrawal/`, {
+                  body,
+              })
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Fail create withdrawl address ${err}`)
+          })
   }
 
-  async getWithdrawalAddresses(currency) {
-    let size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-    let page = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-    let query = {
-      currency: currency.toUpperCase(),
-      size,
-      page
-    };
-    this.getTime().then(() => {
-      return this.get("/main/api/v2/accounting/withdrawalAddresses/", {
-        query
-      });
-    }).then(res => {
-      return res;
-    }).catch(err => {
-      throw new Error("Fail get withdrawal addys ".concat(err));
-    });
-  } // Deposit Address
+  async getWithdrawalAddresses(currency, size = 100, page = 0) {
+      let query = {
+          currency: currency.toUpperCase(),
+          size,
+          page,
+      }
 
+      this.getTime()
+          .then(() => {
+              return this.get(
+                  `/main/api/v2/accounting/withdrawalAddresses/`,
+                  { query }
+              )
+          })
+          .then(res => {
+              return res
+          })
+          .catch(err => {
+              throw new Error(`Fail get withdrawal addys ${err}`)
+          })
+  }
 
+  // Deposit Address
   async getDepositAddresses(currency) {
-    let query = {
-      currency: currency.toUpperCase()
-    };
 
-    try {
-      const time = await this.getTime();
-      const res = await this.get('/main/api/v2/accounting/depositAddresses/', {
-        query
-      });
-      return res;
-    } catch (err) {
-      throw new Error("Failed to get deposit addresses, pass in currency: ".concat(err));
-    }
+      let query = {
+          currency: currency.toUpperCase()
+      };
+      try {
+          const time = await this.getTime();
+          const res = await this.get('/main/api/v2/accounting/depositAddresses/', {
+              query
+          })
+          return res
+      } catch (err) {
+          throw new Error("Failed to get deposit addresses, pass in currency: ".concat(err));
+      }
   }
-
 }
 
-export default NiceHash;
+export default NiceHash
